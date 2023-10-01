@@ -1,6 +1,6 @@
 #include "brackets_check.h"
 
-bool CheckBrackets(const std::string &line){
+bool CheckBrackets(std::string line){
     int counter {0};
     for (char symb: line) {
         switch (symb) {

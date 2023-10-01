@@ -2,4 +2,4 @@
 
 #include <string>
 
-bool CheckBrackets(const std::string &line);
+bool CheckBrackets(std::string line);
