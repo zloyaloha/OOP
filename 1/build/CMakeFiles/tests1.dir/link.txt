@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/tests1.dir/tests1.cpp.o CMakeFiles/tests1.dir/brackets_check.cpp.o -o tests1  /usr/local/lib/libgtest.a 

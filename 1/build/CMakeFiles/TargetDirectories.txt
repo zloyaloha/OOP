@@ -1,0 +1,5 @@
+/home/zloyaloha/Yandex.Disk/MAI/OOP/1/build/CMakeFiles/task01.dir
+/home/zloyaloha/Yandex.Disk/MAI/OOP/1/build/CMakeFiles/tests1.dir
+/home/zloyaloha/Yandex.Disk/MAI/OOP/1/build/CMakeFiles/test.dir
+/home/zloyaloha/Yandex.Disk/MAI/OOP/1/build/CMakeFiles/edit_cache.dir
+/home/zloyaloha/Yandex.Disk/MAI/OOP/1/build/CMakeFiles/rebuild_cache.dir

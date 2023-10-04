@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/task01.dir/task1.cpp.o CMakeFiles/task01.dir/brackets_check.cpp.o -o task01 
