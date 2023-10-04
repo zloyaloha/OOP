@@ -425,7 +425,3 @@ int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-
-// 1 2 3 4 5 5 A A
-//         3 2 1 7
-//         2 3 9 3
