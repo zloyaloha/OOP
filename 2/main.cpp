@@ -2,13 +2,8 @@
 #include "eleven.h"
 
 int main(){
-    // try {
-    //     Eleven el1(6, '-');
-    // } catch (const std::range_error &err) {
-    //     std::cout << err.what() << std::endl;
-    // }
-    Eleven ds2{"777"};
-    Eleven ds1("777");    // ds1.print(std::cout) << std::endl;
-    // ds2.print(std::cout) << std::endl;
-    ds1.Add(ds2);
+    Eleven el1{"123AA236723AA"}, el2{"12311"}, el3{"311"}, el5("111111AA112322645789203633"), el6("111111AA11232140585329879A");
+    el2 -= el3;
+    std::cout << el2;
+    std::cout << el5 - el3;
 }

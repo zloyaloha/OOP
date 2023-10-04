@@ -1,94 +1,130 @@
 #include "eleven.h"
 #include "help.h"
 
-Eleven::Eleven() {
+Eleven::Eleven()
+{
     _size = 1;
     _array = new unsigned char[_size];
     _array[0] = '0';
 }
 
-Eleven::Eleven(const size_t &size, unsigned char t){
+Eleven::Eleven(const size_t &size, unsigned char t)
+{
     _array = new unsigned char[size];
-    for (size_t i {0}; i < size; ++i) {
-        if ((t >= '0' && t <= '9') || t == 'A') {
+    for (size_t i{0}; i < size; ++i)
+    {
+        if ((t >= '0' && t <= '9') || t == 'A')
+        {
             _array[i] = t;
-        } else {
+        }
+        else
+        {
             throw std::range_error("Invalid digit");
         }
     }
     _size = size;
 }
 
-Eleven::Eleven(const std::initializer_list<unsigned char> &list) {
+Eleven::Eleven(const std::initializer_list<unsigned char> &list)
+{
     _array = new unsigned char[list.size()];
     bool flag = false;
     size_t i{list.size() - 1};
     size_t counter{0};
-    for (const auto &c: list) {
-        if (flag == false) {
-            if (c == '0') {
+    for (const auto &c : list)
+    {
+        if (flag == false)
+        {
+            if (c == '0')
+            {
                 i--;
                 counter++;
                 continue;
-            } else if ((c > '0' && c <= '9') || c == 'A') {
+            }
+            else if ((c > '0' && c <= '9') || c == 'A')
+            {
                 _array[i--] = c;
                 flag = true;
-            } else {
+            }
+            else
+            {
                 throw std::range_error("Invalid digit");
             }
-        } else {
-            if ((c >= '0' && c <= '9') || c == 'A') {
+        }
+        else
+        {
+            if ((c >= '0' && c <= '9') || c == 'A')
+            {
                 _array[i--] = c;
-            } else {
+            }
+            else
+            {
                 throw std::range_error("Invalid digit");
             }
         }
     }
-    if (flag == false) {
+    if (flag == false)
+    {
         _size = 1;
         _array[0] = '0';
-    } else {
+    }
+    else
+    {
         _size = list.size() - counter;
     }
 }
 
-Eleven::Eleven(const std::string &str) {
-    _size  = str.size();
+Eleven::Eleven(const std::string &str)
+{
+    _size = str.size();
     _array = new unsigned char[_size];
     bool flag = false;
     int counter = 0;
-    for (int i = 0; i < str.size(); ++i) {
+    for (int i = 0; i < str.size(); ++i) 
+    {
         if (flag == false) {
-            if (str[i] == '0') {
+            if (str[i] == '0') 
+            {
                 counter++;
                 continue;
-            } else if ((str[i] >= '0' && str[i] <= '9') || str[i] == 'A') {
+            }
+            else if ((str[i] >= '0' && str[i] <= '9') || str[i] == 'A') 
+            {
                 _array[_size - i - 1] = str[i];
                 flag = true;
-            } else {
+            } 
+            else 
+            { 
                 throw std::range_error("Invalid digit");
             }
         } else {
-            if ((str[i] >= '0' && str[i] <= '9') || str[i] == 'A') {
+            if ((str[i] >= '0' && str[i] <= '9') || str[i] == 'A') 
+            {
                 _array[_size - i - 1] = str[i];
-            } else {
+            } 
+            else 
+            {
                 throw std::range_error("Invalid digit");
             }
         }
     }
-    if (flag == false) {
+    if (flag == false) 
+    {
         _size = 1;
         _array[0] = '0';
-    } else {
+    } 
+    else 
+    {
         _size = str.size() - counter;
     }
 }
 
 Eleven::Eleven(const Eleven &other)
 {
-    _size  = other._size;
+    _size = other._size;
     _array = new unsigned char[_size];
-    for (int i = _size - 1; i >= 0; --i) _array[i] = other._array[i];
+    for (int i = _size - 1; i >= 0; --i)
+        _array[i] = other._array[i];
 }
 
 Eleven::Eleven(Eleven &&other) noexcept
@@ -99,43 +135,36 @@ Eleven::Eleven(Eleven &&other) noexcept
     other._array = nullptr;
 }
 
-std::ostream &Eleven::print(std::ostream &os)
-{   
-    os << "Size: " << _size << '\n';
-    os << "Num: ";
-    for (int i = _size - 1; i >= 0; --i)
-        os << _array[i];
-    os << '\n';
-    return os;
-}
-
-Eleven Eleven::DelNulls() {
-    int i = _size - 1;
-    while (_array[i] == '0' && i >= 0) {
-        i--;
-    }
-    if (i == -1) {
-        _size = 1;
-    } else {
-        _size = _size - i - 1;
-    }
-    return *this;
-}
-
-Eleven::~Eleven() noexcept {   
-    if (_size > 0) {
+Eleven::~Eleven() noexcept
+{
+    if (_size > 0)
+    {
         _size = 0;
         delete[] _array;
         _array = nullptr;
     }
 }
 
-bool Eleven::Equals(const Eleven &other) const {
-    if (other._size != _size) {
+Eleven &Eleven::operator=(const Eleven &other)
+{
+    _size = other._size;
+    _array = new unsigned char[_size];
+    std::memcpy(_array, other._array, other._size * sizeof(unsigned char));
+    return *this;
+}
+
+bool Eleven::operator==(const Eleven &other) const
+{
+    if (other._size != _size)
+    {
         return false;
-    } else {
-        for (size_t i = 0; i < _size; ++i) {
-            if (_array[i] != other._array[i]) {
+    }
+    else
+    {
+        for (size_t i = 0; i < _size; ++i)
+        {
+            if (_array[i] != other._array[i])
+            {
                 return false;
             }
         }
@@ -143,85 +172,183 @@ bool Eleven::Equals(const Eleven &other) const {
     return true;
 }
 
-bool Eleven::More(const Eleven &other) const {
-    if (_size > other._size) {
+bool Eleven::operator!=(const Eleven &other) const
+{
+    return !(*this == other);
+}
+
+bool Eleven::operator>(const Eleven &other) const
+{
+    if (_size > other._size)
+    {
         return true;
-    } else if (_size == other._size) {
-        for (int i = _size - 1; i >= 0; i--) {
-            if (_array[i] > other._array[i]) {
+    }
+    else if (_size == other._size)
+    {
+        for (int i = _size - 1; i >= 0; i--) 
+        {
+            if (_array[i] > other._array[i])
+            {
                 return true;
-            } else if (_array[i] < other._array[i]) {
+            }
+            else if (_array[i] < other._array[i])
+            {
                 return false;
             }
         }
         return false;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
 
-bool Eleven::Less(const Eleven &other) const {
-    if (_size > other._size) {
-        return false;
-    } else if (_size == other._size) {
-        for (int i = _size - 1; i >= 0; i--) {
-            if (_array[i] > other._array[i]) {
-                return false;
-            } else if (_array[i] < other._array[i]) {
-                return true;
-            }
-        }
-        return false;
-    } else {
+bool Eleven::operator>=(const Eleven &other) const
+{
+    if (_size > other._size)
+    {
         return true;
     }
+    else if (_size == other._size)
+    {
+        for (int i = _size - 1; i >= 0; i--)
+        {
+            if (_array[i] > other._array[i])
+            {
+                return true;
+            }
+            else if (_array[i] < other._array[i])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-Eleven Eleven::Max(const Eleven &other) {
-    return (*this).More(other) ? *this : other;
+bool Eleven::operator<(const Eleven &other) const
+{
+    return !((*this) >= other);
+}
+
+bool Eleven::operator<=(const Eleven &other) const
+{
+    return !((*this) > other);
 }
 
 void Eleven::CopyP1() {
-    unsigned char *tmpArray = new unsigned char[_size + 1];
-    tmpArray[_size] = '0';
-    for (size_t i = 0; i < _size; ++i) {
-        tmpArray[i] = _array[i];
-    }
-    _array = tmpArray;
-    _size++;
+    unsigned char *tmpArr = new unsigned char[_size + 1];
+    std::memcpy(tmpArr, _array, sizeof(unsigned char) * _size);
+    delete [] this->_array;
+    this->_array = tmpArr;
+    this->_size = _size + 1;
+    _array[_size - 1] = '0';
 }
 
-Eleven Eleven::Add(const Eleven &other) {
+void Eleven::CopyM1() {
+    unsigned char *tmpArr = new unsigned char[_size - 1];
+    std::memcpy(tmpArr, _array, (_size - 1) * sizeof(unsigned char));
+    delete [] this->_array;
+    this->_array = tmpArr;
+    this->_size = _size - 1;
+}
+
+Eleven Eleven::operator+(const Eleven &other)
+{
     size_t i = 0;
     char mod = '0';
     Eleven r;
     while (i < other._size && i < _size) {
-        r._array[i] = Adding(Adding(other._array[i], _array[i]).first, mod).first;
-        if (Adding(other._array[i], _array[i]).first == 'A' && mod == '1') {
-            mod = '1';
-        } else {
-            mod = Adding(other._array[i], _array[i]).second;
-        }
+        r._array[i] = Adding(other._array[i], _array[i], mod).first;
+        mod = Adding(other._array[i], _array[i], mod).second;
         i++;
         r.CopyP1();
     }
-    r._array[_size] = mod;
+    r._array[r._size - 1] = mod;
     while (i < _size) {
-        r._array[i] = Adding(mod, _array[i]).first;
-        mod = Adding(mod, _array[i]).second;
+        r._array[i] = Adding(mod, _array[i], '0').first;
+        mod = Adding(mod, _array[i], '0').second;
         i++;
         r.CopyP1();
     }
-   while (i < other._size) {
-        r._array[i] = Adding(mod, other._array[i]).first;
-        mod = Adding(other._array[i], mod).second;
+    while (i < other._size) {
+        r._array[i] = Adding(mod, other._array[i], '0').first;
+        mod = Adding(other._array[i], mod, '0').second;
         i++;
         r.CopyP1();
     }
     if (mod == '0') {
-        r._size--;
-    } else {
+        r.CopyM1();
+    }
+    else {
         r._array[_size] = mod;
     }
     return r;
+}
+
+std::ostream &operator<<(std::ostream &os, const Eleven &el)
+{
+    os << "Num = ";
+    for (int i = el._size - 1; i >= 0; --i)
+        os << el._array[i];
+    os << " | Size: " << el._size << '\n';
+    return os;
+}
+
+std::istream &operator>>(std::istream &is, Eleven &el)
+{
+    std::string str;
+    is >> str;
+    el = Eleven(str);
+    return is;
+}
+
+Eleven Eleven::operator-(const Eleven &other)
+{
+    if ((*this) < other)
+    {
+        throw std::underflow_error("Result can't be negative");
+    }
+    else
+    {
+        size_t i = 0;
+        Eleven r;
+        char mod = '0';
+        while (i < other._size) {
+            r._array[i] = Substruction(_array[i], other._array[i], mod).first;
+            mod = Substruction(_array[i], other._array[i], mod).second;
+            i++;
+            r.CopyP1();
+        }
+        while (i < _size) {
+            r._array[i] = Substruction(_array[i], '0', mod).first;
+            mod = Substruction(_array[i], '0', mod).second;
+            ;
+            i++;
+            r.CopyP1();
+        }
+        i = r._size - 1;
+        while (r._array[i--] == '0') {
+            r.CopyM1();
+        }
+        if (r._size == 0) {
+            r.CopyP1();
+        }
+        return r;
+    }
+}
+
+Eleven &Eleven::operator-=(const Eleven &other) {
+    *this = *this - other;
+    return *this;
+}
+
+Eleven &Eleven::operator+=(const Eleven &other) {
+    *this = *this + other;
+    return *this;
 }
