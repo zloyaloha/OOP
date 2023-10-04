@@ -15,11 +15,11 @@ include_directories(${INCLUDE_DIR})
 file(GLOB_RECURSE SOURCES LIST_DIRECTORIES false ${SOURCE_DIR}/*.cpp)
 
 add_library(lab_02_lib ${SOURCES})
-add_executable(lab_02_exe main.cpp ${SOURCE_DIR}/help.cpp)
-add_executable(tests_exe ${TEST_DIR}/tests.cpp ${SOURCE_DIR}/help.cpp)
+add_executable(lab_02.exe main.cpp ${SOURCE_DIR}/help.cpp)
+add_executable(tests.exe ${TEST_DIR}/tests.cpp ${SOURCE_DIR}/help.cpp)
 
 enable_testing()
 
 add_test(NAME BASIC COMMAND test)
-target_link_libraries(tests_exe ${GTEST_LIBRARIES} lab_02_lib)
-target_link_libraries(lab_02_exe PRIVATE lab_02_lib)
+target_link_libraries(tests.exe ${GTEST_LIBRARIES} lab_02_lib)
+target_link_libraries(lab_02.exe PRIVATE lab_02_lib)
