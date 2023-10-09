@@ -241,49 +241,38 @@ bool Eleven::operator<=(const Eleven &other) const
     return !((*this) > other);
 }
 
-void Eleven::CopyP1() {
-    unsigned char *tmpArr = new unsigned char[_size + 1];
-    std::memcpy(tmpArr, _array, sizeof(unsigned char) * _size);
-    delete [] this->_array;
-    this->_array = tmpArr;
-    this->_size = _size + 1;
-    _array[_size - 1] = '0';
-}
 
-void Eleven::CopyM1() {
-    unsigned char *tmpArr = new unsigned char[_size - 1];
-    std::memcpy(tmpArr, _array, (_size - 1) * sizeof(unsigned char));
+void Eleven::ResizeCopy(int n) {
+    unsigned char *tmpArr = new unsigned char[n];
+    std::memcpy(tmpArr, _array, n * sizeof(unsigned char));
     delete [] this->_array;
     this->_array = tmpArr;
-    this->_size = _size - 1;
+    this->_size = n;
 }
 
 Eleven Eleven::operator+(const Eleven &other)
 {
     size_t i = 0;
     char mod = '0';
-    Eleven r;
+    int size = other._size > _size ? other._size : _size;
+    Eleven r(size + 1, '0');
     while (i < other._size && i < _size) {
         r._array[i] = Adding(other._array[i], _array[i], mod).first;
         mod = Adding(other._array[i], _array[i], mod).second;
         i++;
-        r.CopyP1();
     }
-    r._array[r._size - 1] = mod;
     while (i < _size) {
         r._array[i] = Adding(mod, _array[i], '0').first;
         mod = Adding(mod, _array[i], '0').second;
         i++;
-        r.CopyP1();
     }
     while (i < other._size) {
         r._array[i] = Adding(mod, other._array[i], '0').first;
         mod = Adding(other._array[i], mod, '0').second;
         i++;
-        r.CopyP1();
     }
     if (mod == '0') {
-        r.CopyM1();
+        r.ResizeCopy(r._size - 1);
     }
     else {
         r._array[_size] = mod;
@@ -310,35 +299,35 @@ std::istream &operator>>(std::istream &is, Eleven &el)
 
 Eleven Eleven::operator-(const Eleven &other)
 {
-    if ((*this) < other)
-    {
+    if ((*this) < other) {
         throw std::underflow_error("Result can't be negative");
-    }
-    else
-    {
+    } else {
         size_t i = 0;
-        Eleven r;
+        Eleven r(_size, '0');
         char mod = '0';
         while (i < other._size) {
             r._array[i] = Substruction(_array[i], other._array[i], mod).first;
             mod = Substruction(_array[i], other._array[i], mod).second;
             i++;
-            r.CopyP1();
         }
         while (i < _size) {
             r._array[i] = Substruction(_array[i], '0', mod).first;
             mod = Substruction(_array[i], '0', mod).second;
-            ;
             i++;
-            r.CopyP1();
         }
         i = r._size - 1;
+        int counter0 = 0;
         while (r._array[i--] == '0') {
-            r.CopyM1();
+            counter0++;
+        }
+        if (counter0 != 0) {
+            r.ResizeCopy(r._size - counter0);
         }
         if (r._size == 0) {
-            r.CopyP1();
+            r.ResizeCopy(1);
+            r._array[0] = '0';
         }
+        std::cout << r;
         return r;
     }
 }

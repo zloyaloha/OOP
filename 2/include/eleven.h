@@ -32,8 +32,7 @@ class Eleven {
         Eleven Max(const Eleven &a, const Eleven &b);
         Eleven Min(const Eleven &a, const Eleven &b);
         Eleven& operator=(const Eleven &other);
-        void CopyP1();
-        void CopyM1();
+        void ResizeCopy(int n);
 
         friend std::ostream& operator << (std::ostream &os, const Eleven &el);
         friend std::istream& operator >> (std::istream &stream, Eleven &el);
