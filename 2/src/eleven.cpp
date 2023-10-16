@@ -120,7 +120,7 @@ Eleven::Eleven(const std::string &str)
 }
 
 Eleven::Eleven(const Eleven &other)
-{
+{   
     _size = other._size;
     _array = new unsigned char[_size];
     for (int i = _size - 1; i >= 0; --i)
@@ -128,7 +128,7 @@ Eleven::Eleven(const Eleven &other)
 }
 
 Eleven::Eleven(Eleven &&other) noexcept
-{
+{   
     _size = other._size;
     _array = other._array;
     other._size = 0;
@@ -327,7 +327,6 @@ Eleven Eleven::operator-(const Eleven &other)
             r.ResizeCopy(1);
             r._array[0] = '0';
         }
-        std::cout << r;
         return r;
     }
 }

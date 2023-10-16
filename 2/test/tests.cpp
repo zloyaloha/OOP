@@ -33,7 +33,20 @@ TEST(test_1_7, basic_test_set) {
 }
 
 TEST(test_1_8, basic_test_set) {
-    ASSERT_THROW(Eleven el{'K'}, std::range_error);
+    ASSERT_THROW(Eleven el({'K', 'A', 'R'}), std::range_error);
+}
+
+TEST(test_1_9, basic_test_set) {
+    Eleven el{"12571"};
+    Eleven el1(el);
+    ASSERT_TRUE(el1 == el == true);
+}
+
+TEST(test_1_10, basic_test_set) {
+    Eleven el3{"12571"};
+    Eleven el2{"12571"};
+    Eleven el1(std::move(el2));
+    ASSERT_TRUE(el3 == el1 == true);
 }
 
 //equal block
@@ -81,6 +94,8 @@ TEST(test_2_9, basic_test_set) {
     Eleven el1{"0000002323"}, el2{"002323"};
     ASSERT_TRUE(el2 != el1 == false);
 }
+
+
 
 // more block
 

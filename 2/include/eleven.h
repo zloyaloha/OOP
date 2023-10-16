@@ -29,8 +29,6 @@ class Eleven {
         Eleven &operator +=(const Eleven &other);
         Eleven &operator -=(const Eleven &other);
 
-        Eleven Max(const Eleven &a, const Eleven &b);
-        Eleven Min(const Eleven &a, const Eleven &b);
         Eleven& operator=(const Eleven &other);
         void ResizeCopy(int n);
 
