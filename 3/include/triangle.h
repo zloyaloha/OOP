@@ -7,17 +7,19 @@
 
 class Triangle : public Figure {
     public:
-        Triangle();
-        Triangle(const Point &refPoint, const Point &_sideLen);
-        Triangle(const Triangle &other);
-        ~Triangle() = default;
-        bool operator==(const Figure &other) const override;
-        void print(std::ostream &os) const override;
-        void input(std::istream &os) override;
-        Figure &operator=(const Figure &other) override;
-        Point getThirdVertex() const;
+        Triangle() = default;
+        Triangle(const std::vector<Point> & points);
+        Triangle(const Triangle & other) noexcept = default;
+        virtual ~Triangle() noexcept = default;
+        bool valid(const std::vector<Point> &p);
+        bool isEqual(const Figure &other) const override;
+        // Figure &operator=(const Figure &other) override;
+        // Point getThirdVertex() const;
         operator double() const override;
         Point getCenter() const override;
+    private:
+        void print(std::ostream &os) const override;
+        // void input(std::istream &os) override;
 };
 
 
