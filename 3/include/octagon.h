@@ -2,16 +2,16 @@
 #include "point.h"
 #include <cmath>
 #define PI 3.14159265
-#ifndef HEXAGON_H
-#define HEXAGON_H
+#ifndef OCTAGON_H
+#define OCTAGON_H
 
-class Hexagon : public Figure {
+class Octagon : public Figure {
     public:
-        Hexagon() = default;
-        Hexagon(const std::vector<Point> & points);
-        Hexagon(const Hexagon & other);
-        virtual ~Hexagon() noexcept = default;
-        // Figure &operator=(const Figure &other) override;
+        Octagon() = default;
+        Octagon(const std::vector<Point> & points);
+        Octagon(const Octagon & other);
+        Octagon(const Octagon &&other);
+        virtual ~Octagon() noexcept = default;
         operator double() const override;
         Point getCenter() const override;
     private:

@@ -16,4 +16,5 @@ file(GLOB_RECURSE SOURCES LIST_DIRECTORIES false ${SOURCE_DIR}/*.cpp)
 add_library(lab_03_lib ${SOURCES})
 add_executable(lab_03.exe main.cpp)
 
+
 target_link_libraries(lab_03.exe PRIVATE lab_03_lib)

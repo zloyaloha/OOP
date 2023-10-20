@@ -10,14 +10,14 @@ Triangle::Triangle(const std::vector<Point> & points) {
     }
 }
 
-Triangle::Triangle(const Triangle &other) : _points(other._points) {}
+Triangle::Triangle(const Triangle &other) {
+    _points = other._points;
+}
 
 
-bool Triangle::valid(const std::vector<Point> &p){
-    double x = (p[0].getX() - p[1].getX())*std::cos(PI / 3) - (p[0].getY() - p[1].getY())*std::sin(PI / 3) + p[1].getX();
-    double y = (p[0].getX() - p[1].getX())*std::sin(PI / 3) + (p[0].getY() - p[1].getY())*std::cos(PI / 3) + p[1].getY();
-    Point third(x,y);
-    return third == p[2];
+bool Triangle::valid(const std::vector<Point> &p) const{
+    double l1 = p[0].distance(p[1]), l2 = p[0].distance(p[2]), l3 = p[0].distance(p[2]);
+    return l1 > EPSILON && fabs(l2 - l1) < EPSILON && fabs(pow(l3, 2) - pow(l2, 2) + pow(l1, 2) - 2 * l1 * l2 * cos(PI / 3)) < EPSILON;
 }
 
 Triangle::operator double() const {
@@ -25,7 +25,7 @@ Triangle::operator double() const {
 }
 
 bool Triangle::isEqual(const Figure &other) const {
-    return other.getPoints()[0].distance(other.getPoints()[1]) == _points[0].distance(_points[1]);
+    return other.getPoints()[0].distance(other.getPoints()[1]) - _points[0].distance(_points[1]) < EPSILON;
 }
 
 Point Triangle::getCenter() const {
@@ -33,23 +33,25 @@ Point Triangle::getCenter() const {
     return tmp;
 }
 
-// Figure& Triangle::operator=(const Figure& other) {
-//     if (this == &other) {
-//         return *this;
-//     }
-//     const Triangle* triangle = dynamic_cast<const Triangle*>(&other);
-//     if (triangle) {
-//         this->_refPoint = triangle->_refPoint;
-//         this->_vertex = triangle->_vertex;
-//     }
-//     return *this;
-// }
-
 void Triangle::print(std::ostream& os) const{
+    if (_points.size() == 0) {
+        throw std::logic_error("can't print empty figure");
+    }
     for (size_t i = 0; i < 3; i++) {
         os << _points[i];
     }
 }
-// void Triangle::input(std::istream &is) {
-//     is >> this->_refPoint; is >> this->_vertex;
-// }
+
+void Triangle::input(std::istream &is) {
+    std::vector<Point> tmpV;
+    Point tmp;
+    for (size_t i = 0; i < 3; ++i) {
+        is >> tmp;
+        tmpV.push_back(tmp);
+    }
+    if (!valid(tmpV)) {
+        throw std::range_error("Error! Square Constructor: invalid points");
+    } else {
+        _points = tmpV;
+    }
+}
