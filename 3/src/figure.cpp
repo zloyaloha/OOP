@@ -11,14 +11,6 @@ Figure::Figure(const Figure &&other) noexcept{
     _points = std::move(other._points);
 }
 
-Figure& Figure::operator=(const Figure& other) {
-    if (typeid(*this) != typeid(other)) {
-        throw std::logic_error("diff types");
-    }
-    _points = other._points;
-    return *this;
-}
-
 std::ostream& operator << (std::ostream& os, const Figure& p) {
     p.print(os);
     return os;

@@ -17,7 +17,6 @@ class Figure {
         virtual operator double () const = 0;
         friend bool operator==(const Figure &lhs, const Figure &rhs);
         virtual Point getCenter() const = 0;
-        Figure &operator = (const Figure &other);
         friend std::ostream &operator << (std::ostream& os, const Figure& f);
         friend std::istream &operator >> (std::istream& is, Figure& f);
     protected:

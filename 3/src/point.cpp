@@ -9,7 +9,7 @@ Point::Point(const Point &other) : _x(other._x), _y(other._y) {}
 Point::~Point() {}
 
 bool Point::operator == (const Point &other) const {
-    return (abs(_x - other._x) < EPSILON && abs(_y - other._y) < EPSILON) ? true : false;
+    return this->distance(other) < EPSILON ? true : false;
 }
 
 bool Point::operator != (const Point &other) const {

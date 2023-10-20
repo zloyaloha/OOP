@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#define EPSILON 0.001
+#define EPSILON 0.01
+#define PI 3.141592653
 #ifndef POINT_H
 #define POINT_H
 
