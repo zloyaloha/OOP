@@ -37,7 +37,7 @@ bool Triangle::isEqual(const Figure &other) const {
     if (_points.size() == 0 || other.getPoints().size() == 0) {
         throw std::range_error("can't compare empty figures");
     }
-    return other.getPoints()[0].distance(other.getPoints()[1]) - _points[0].distance(_points[1]) < EPSILON;
+    return fabs(other.getPoints()[0].distance(other.getPoints()[1]) - _points[0].distance(_points[1])) < EPSILON;
 }
 
 Point Triangle::getCenter() const {

@@ -13,7 +13,7 @@ class Point {
         Point();
         Point(const double newX, const double newY);
         Point(const Point &other);
-        ~Point();
+        virtual ~Point();
         bool operator == (const Point &other) const;
         bool operator != (const Point &other) const;
         double getX() const;

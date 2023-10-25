@@ -355,6 +355,36 @@ TEST(ArrayErase, test02) {
     ASSERT_THROW(ar.erase(10), std::range_error);
 }
 
+TEST(FiguresEqualTest, test00) {
+    Triangle t(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    Triangle t1(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    ASSERT_TRUE(t == t1);
+}
+
+TEST(FiguresEqualTest, test01) {
+    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Triangle t1(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    ASSERT_TRUE(t == t1);
+}
+
+TEST(FiguresEqualTest, test02) {
+    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Hexagon h(GenerateFigures(6));
+    ASSERT_FALSE(t == h);
+}
+
+TEST(FiguresEqualTest, test03) {
+    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Octagon o(GenerateFigures(8));
+    ASSERT_FALSE(t == o);
+}
+
+TEST(FiguresEqualTest, test04) {
+    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Triangle t1(std::vector<Point>{Point(-7.55,-3.16), Point(-5.63,-4.58), Point(-5.36, -2.21)});
+    ASSERT_FALSE(t == t1);
+}
+
 int main(int argc, char **argv) {
     srand(time(NULL));
     testing::InitGoogleTest(&argc, argv);
