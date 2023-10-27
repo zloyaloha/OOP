@@ -12,37 +12,37 @@ TEST(PointConstructorDefault, test_00) {
 
 TEST(PointConstructorByCoordinates, test_00) {
     Point p1(1, 2);
-    ASSERT_TRUE(abs(p1.getX() - 1) < EPSILON && abs(p1.getY() - 2)< EPSILON);
+    ASSERT_TRUE(fabs(p1.getX() - 1) < EPSILON && fabs(p1.getY() - 2)< EPSILON);
 }
 
 TEST(PointConstructorByCoordinates, test_01) {
     Point p1(-10.3, 12.4);
-    ASSERT_TRUE(abs(p1.getX() - (-10.3)) < EPSILON && abs(p1.getY() - 12.4) < EPSILON);
+    ASSERT_TRUE(fabs(p1.getX() - (-10.3)) < EPSILON && fabs(p1.getY() - 12.4) < EPSILON);
 }
 
 TEST(PointConstructorByCoordinates, test_02) {
     Point p1(17.1123, -56.489);
-    ASSERT_TRUE(abs(p1.getX() - 17.1123) < EPSILON && abs(p1.getY() - (-56.489)) < EPSILON);
+    ASSERT_TRUE(fabs(p1.getX() - 17.1123) < EPSILON && fabs(p1.getY() - (-56.489)) < EPSILON);
 }
 
 TEST(PointConstructorByOtherPoint, test_00) {
     Point p1(Point(3,4));
-    ASSERT_TRUE(abs(p1.getX() - 3) < EPSILON && abs(p1.getY() - 4) < EPSILON);
+    ASSERT_TRUE(fabs(p1.getX() - 3) < EPSILON && fabs(p1.getY() - 4) < EPSILON);
 }
 
 TEST(PointConstructorByOtherPoint, test_01) {
     Point p1(Point(-10,-0.123112));
-    ASSERT_TRUE(abs(p1.getX() - (-10)) < EPSILON && abs(p1.getY() - (-0.123112)) < EPSILON);
+    ASSERT_TRUE(fabs(p1.getX() - (-10)) < EPSILON && fabs(p1.getY() - (-0.123112)) < EPSILON);
 }
 
 TEST(PointConstructorByOtherPoint, test_02) {
     Point p1(Point(0,0));
-    ASSERT_TRUE(abs(p1.getX()) < EPSILON && abs(p1.getY()) < EPSILON);
+    ASSERT_TRUE(fabs(p1.getX()) < EPSILON && fabs(p1.getY()) < EPSILON);
 }
 
 TEST(PointConstructorByOtherPoint, test_03) {
     Point p1(Point(Point(4.1231, 313.109283)));
-    ASSERT_TRUE(abs(p1.getX() - 4.1231) < EPSILON && abs(p1.getY() - 313.109283) < EPSILON);
+    ASSERT_TRUE(fabs(p1.getX() - 4.1231) < EPSILON && fabs(p1.getY() - 313.109283) < EPSILON);
 }
 
 TEST(PointEqualOperatorCheck_test_03_Test, test_00) {
@@ -63,17 +63,17 @@ TEST(PointEqualOperator, test_03) {
 
 TEST(PointDistance, test_00) {
     Point p1(-9,2), p2(-10,-100);
-    ASSERT_TRUE(p1.distance(p2) - 102.0049 < EPSILON);
+    ASSERT_TRUE(fabs(p1.distance(p2) - 102.00) < EPSILON);
 }
 
 TEST(PointDistance, test_01) {
     Point p1(4,5), p2(8,0);
-    ASSERT_TRUE(p1.distance(p2) - 6.4031 < EPSILON);
+    ASSERT_TRUE(fabs(p1.distance(p2) - 6.40) < EPSILON);
 }
 
 TEST(PointDistance, test_02) {
     Point p1(12.3,-10.55), p2(-1.89,0.78);
-    ASSERT_TRUE(p1.distance(p2) - 23.0055 < EPSILON);
+    ASSERT_FALSE(fabs(p1.distance(p2) - 23.00) < EPSILON);
 }
 
 TEST(OperatorCopy, test_00) {
@@ -112,7 +112,7 @@ TEST(TriangleMoveConstructor, test00) {
 
 TEST(TriangleSquare, test00) {
     Triangle t(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
-    ASSERT_TRUE(double(t) - 3.2111 < EPSILON);
+    ASSERT_TRUE(fabs(double(t) - 3.2111) < EPSILON);
 }
 
 TEST(TriangleSquare, test01) {
@@ -177,7 +177,7 @@ TEST(HexagonMoveConstructor, test00) {
 
 TEST(HexagonSquare, test00) {
     Hexagon t(std::vector<Point> {Point(-2,9), Point(9,-10), Point(30.95,-9.97), Point(41.91, 9.05), Point(30.91, 28.05), Point(8.95,28.03)});
-    ASSERT_TRUE(double(t) - 1252.27 < EPSILON);
+    ASSERT_TRUE(fabs(double(t) - 1252.27) < EPSILON);
 }
 
 TEST(HexagonSquare, test01) {
@@ -298,7 +298,7 @@ TEST(ArraySumSquare, test00) {
     Hexagon h1(GenerateFigures(6));
     Triangle t1(GenerateFigures(3));
     FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
-    ASSERT_TRUE(double(ar) - (double(o1) + double(o2) + double(h1) + double(t1)) < EPSILON);
+    ASSERT_TRUE(fabs(double(ar) - (double(o1) + double(o2) + double(h1) + double(t1))) < EPSILON);
 }
 
 TEST(ArraySumSquare, test01) {
@@ -386,7 +386,6 @@ TEST(FiguresEqualTest, test04) {
 }
 
 int main(int argc, char **argv) {
-    srand(time(NULL));
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

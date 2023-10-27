@@ -23,7 +23,7 @@ Triangle::Triangle(const Triangle &&other) {
 
 bool Triangle::valid(const std::vector<Point> &p) const{
     double l1 = p[0].distance(p[1]), l2 = p[0].distance(p[2]), l3 = p[0].distance(p[2]);
-    return l1 > EPSILON && fabs(l2 - l1) < EPSILON && fabs(l3 - l2) < EPSILON && fabs(l3 - l1) < EPSILON;
+    return fabs(l1 - l2) < EPSILON && fabs(l2 - l3) < EPSILON && fabs(l1 - l3) < EPSILON;
 }
 
 Triangle::operator double() const {

@@ -22,9 +22,12 @@ Hexagon::Hexagon(const Hexagon &&other) : Figure(other) {}
 
 bool Hexagon::valid(const std::vector<Point> &p) const{
     for (size_t i = 0; i < 6 - 2; ++i) {
-        if (fabs(p[i].distance(p[i+1]) - p[i+1].distance(p[i+2])) > EPSILON)  return false;
+        if (fabs(p[i].distance(p[i+1]) - p[i+1].distance(p[i+2])) > EPSILON) return false;
     }
     double l = p[0].distance(p[1]);
+    for (size_t i = 0; i < 6 - 3; ++i) {
+        if (fabs(p[i].distance(p[i+3]) - 2 * l) > EPSILON) return false;
+    }
     if (l < EPSILON) return false;
     return true;
 }
@@ -63,7 +66,7 @@ void Hexagon::print(std::ostream& os) const{
 void Hexagon::input(std::istream &is) {
     std::vector<Point> tmpV;
     Point tmp;
-    for (size_t i = 0; i < 8; ++i) {
+    for (size_t i = 0; i < 6; ++i) {
         is >> tmp;
         tmpV.push_back(tmp);
     }

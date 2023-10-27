@@ -19,31 +19,19 @@ std::vector<Point> GenerateFigures(int n) {
 }
 
 int main() {
-    // Triangle t(std::vector<Point> {Point(1.19,1.41), Point(1.88,4.92), Point(4.57,2.57)});
-    // Triangle t1;
-    // // Octagon o(std::vector<Point> {Point(2.09,4.69), Point()});
-    // // std::cout << t1;
-    // Hexagon h(std::vector<Point> {Point(-8.71,-3.29), Point(-6.61,-2.39), Point(-6.34,-0.12), Point(-8.17,1.25), Point(-10.27,0.35), Point(-10.54,-1.92)});
-    // std::cout << h;
-    // t1 = t;
-    // Point p1(2.09, 4.69), p2(5.03,2.85);
-    // std::vector<Point> res = GenerateFigures(6);
     srand(time(NULL));
-    // Hexagon h1(GenerateFigures(6));
-    // Octagon o1(GenerateFigures(8));
-    // Triangle t1(GenerateFigures(3));
-    // Hexagon h2(GenerateFigures(6));
-    // Octagon o2(GenerateFigures(8));
-    // Triangle t2(GenerateFigures(3));
-    // t1 = t2;
-    // // Octagon o2(o1);
-    // // std::cout << o2;
-    // FigureArray ar({&h1,&o1,&t1,&o2,&t2,&h2});
-    // // ar.push_back(&h1);
-    // // ar.push_back(&o2);
-    // std::cout << ar << '\n';
-    // ar.erase(2);
-    // std::cout << ar;
-    Hexagon t;
-    std::cout << (double) t;
+    Hexagon h1;
+    Octagon o1;
+    Triangle t1;
+    std::cout << "Print figures for array.\n";
+    FigureArray ar({&h1,&o1,&t1});
+    for (size_t i = 0; i < ar.getSize(); ++i) {
+        std::cin >> *ar.getArr()[i];
+    }
+    for (size_t i = 0; i < ar.getSize(); ++i) {
+        std::cout << *ar.getArr()[i];
+    }
+    for (size_t i = 0; i < ar.getSize(); ++i) {
+        std::cout << (*ar.getArr()[i]).getCenter() << ' ' << double (*ar.getArr()[i]) << std::endl;
+    }
 }

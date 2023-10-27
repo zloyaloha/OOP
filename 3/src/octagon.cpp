@@ -24,6 +24,9 @@ bool Octagon::valid(const std::vector<Point> &p) const{
         if (fabs(p[i].distance(p[i+1]) - p[i+1].distance(p[i+2])) > EPSILON)  return false;
     }
     double l = p[0].distance(p[1]);
+    for (size_t i = 0; i < 6 - 4; ++i) {
+        if (fabs(p[i].distance(p[i+4]) - 2 * l * sqrt(octagonConst / (octagonConst - 1))) > EPSILON) return false;
+    }
     if (l < EPSILON) return false;
     return true;
 }
