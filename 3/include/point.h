@@ -6,7 +6,7 @@
 #ifndef POINT_H
 #define POINT_H
 
-class Point {
+class Point final {
     friend std::ostream& operator << (std::ostream &os, const Point& point);
     friend std::istream& operator >> (std::istream& is, Point& point);
     public :

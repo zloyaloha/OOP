@@ -3,7 +3,7 @@
 #ifndef OCTAGON_H
 #define OCTAGON_H
 
-class Octagon : public Figure {
+class Octagon final: public Figure {
     public:
         Octagon();
         Octagon(const std::vector<Point> & points);

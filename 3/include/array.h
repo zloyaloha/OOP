@@ -3,7 +3,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-class FigureArray {
+class FigureArray final {
     Figure **_array;
     int _size;
     int _capacity;

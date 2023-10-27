@@ -3,7 +3,7 @@
 #ifndef HEXAGON_H
 #define HEXAGON_H
 
-class Hexagon : public Figure {
+class Hexagon final: public Figure {
     public:
         Hexagon();
         Hexagon(const std::vector<Point> & points);

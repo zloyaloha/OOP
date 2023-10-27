@@ -4,7 +4,7 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
-class Triangle : public Figure {
+class Triangle final: public Figure{
     public:
         Triangle();
         Triangle(const std::vector<Point> & points);
