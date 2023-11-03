@@ -1,15 +1,16 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#define EPSILON 0.001
+#include <array.h>
+#define EPSILON 0.01
 #define PI 3.141592653
 
 template <typename T>
 class Point {
-    friend std::ostream& operator << (std::ostream& os, Point<T> &point) {
+    friend std::ostream& operator << (std::ostream& os, const Point<T> &point) {
         return os << "x = " << point._x << ", y = " << point._y << std::endl;
     }
-    friend Point<T> getAv(const std::vector< Point<T> > &p) {
+    friend Point<T> getAv(const Array<Point<T>> &p) {
         T sumX=0, sumY=0;
         for (size_t i = 0; i < p.size(); i++) {
             sumX += p[i].getX();
