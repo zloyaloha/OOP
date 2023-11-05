@@ -1,8 +1,24 @@
 #pragma once
 #include <memory>
 #include <cstring>
+
 template <typename T>
 class Array {
+    friend std::ostream &operator << (std::ostream& os, const Array<T> &arr) {
+        if (arr.size() == 0) {
+            throw std::range_error("can't print empty array");
+        }
+        os << '[';
+        for (int i = 0; i < arr.size(); i++) {
+            if (i != arr.size() - 1) {
+                os << arr[i] << ", ";
+            } else {
+                os << arr[i] << ']';
+            }
+        }
+        os << '\n';
+        return os;
+    }  
     private:
         int _size;
         int _capacity;
@@ -10,7 +26,7 @@ class Array {
     public:
         Array();
         Array(const std::initializer_list<T> &list);
-        Array(Array &other);
+        Array(const Array &other);
         Array(Array &&other) noexcept;
         ~Array() = default;
 
@@ -21,7 +37,7 @@ class Array {
         void erase(const size_t &idx);
         void pop_back();
 
-        Array<T> &operator=(const Array<T> other);
+        Array<T> &operator=(const Array<T> &other);
 };
 
 template <typename T>
@@ -46,7 +62,7 @@ Array<T>::Array(Array<T> &&other) noexcept {
 }
 
 template <typename T>
-Array<T>::Array(Array<T> &other) {
+Array<T>::Array(const Array<T> &other) {
     _size = other._size;
     _capacity = other._capacity;
     _array = std::make_unique<T[]>(_capacity);
@@ -104,18 +120,7 @@ void Array<T>::pop_back() {
 }
 
 template <typename T>
-std::ostream &operator << (std::ostream& os, const Array<T> &arr) {
-    if (arr.size() == 0) {
-        throw std::range_error("can't print empty array");
-    }
-    for (int i = 0; i < arr.size(); i++) {
-        os << arr[i] << ' ';
-    }
-    os << '\n';
-    return os;
-}
-template <typename T>
-Array<T> &Array<T>::operator=(const Array<T> other) {
+Array<T> &Array<T>::operator=(const Array<T> &other) {
     _size = other._size;
     _capacity = other._capacity;
     _array = std::make_unique<T[]>(_capacity);

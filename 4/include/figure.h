@@ -2,6 +2,11 @@
 #include "point.h"
 #include "array.h"
 
+namespace Figures {
+    const size_t Triangle = 3;
+    const size_t Hexagon = 6;
+    const size_t Octagon = 8;
+}
 template <typename T>
 class Figure {
     public:
@@ -9,7 +14,7 @@ class Figure {
         Figure(const Figure &other);
         Figure(const std::initializer_list<Point<T>> &list);
         ~Figure() = default;
-        Array<Point<T>> getPoints();
+        Array<Point<T>> getPoints() const;
     protected:
         Array<Point<T>> _points;
 };
@@ -23,7 +28,7 @@ template <typename T>
 Figure<T>::Figure(const Figure &other) : _points(other._points) {}
 
 template <typename T>
-Array<Point<T>> Figure<T>::getPoints() {
+Array<Point<T>> Figure<T>::getPoints() const {
     return _points;
 }
 

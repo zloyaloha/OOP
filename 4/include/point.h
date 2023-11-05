@@ -8,7 +8,11 @@
 template <typename T>
 class Point {
     friend std::ostream& operator << (std::ostream& os, const Point<T> &point) {
-        return os << "x = " << point._x << ", y = " << point._y << std::endl;
+        return os << "(" << point._x << ", " << point._y << ")";
+    }
+    friend std::istream& operator >> (std::istream& is, const Point<T> &point) {
+        is >> point._x; is >> point._y;
+        return is;
     }
     friend Point<T> getAv(const Array<Point<T>> &p) {
         T sumX=0, sumY=0;
