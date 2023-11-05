@@ -28,6 +28,8 @@ class Octagon: public Figure<T> {
     public:
         Octagon();
         Octagon(const std::initializer_list<Point<T>> &list);
+        Octagon(const Octagon<Point<T>> &other);
+        Octagon(Octagon<Point<T>> &&other) noexcept;
         virtual ~Octagon() noexcept = default;
 
         Point<T> getCenter() const;
@@ -35,6 +37,7 @@ class Octagon: public Figure<T> {
 
         bool operator==(const Figure<T> &other) const;
         Octagon<T> &operator = (Figure<T> &other);
+        Octagon<T> &operator = (Figure<T> &&other);
 
     private:
         bool valid(const Array<Point<T>> &list);
@@ -42,6 +45,12 @@ class Octagon: public Figure<T> {
 
 template <typename T>
 Octagon<T>::Octagon(): Figure<T>() {}
+
+template <typename T>
+Octagon<T>::Octagon(const Octagon<Point<T>> &other): Figure<T>(other) {}
+
+template <typename T>
+Octagon<T>::Octagon(Octagon<Point<T>> &&other) noexcept: Figure<T>(other) {}
 
 template <typename T>
 Octagon<T>::Octagon(const std::initializer_list<Point<T>> &list) {
@@ -101,6 +110,17 @@ Octagon<T> &Octagon<T>::operator = (Figure<T> &other) {
     Octagon<T> *ptr = static_cast<Octagon<T>*>(&other);
     if (ptr) {
         Figure<T>::_points = other._points;
+        return *this;
+    } else {
+        throw std::logic_error("can't assign different types of figures");
+    }
+}
+
+template <typename T>
+Octagon<T> &Octagon<T>::operator = (Figure<T> &&other) {
+    Octagon<T> *ptr = static_cast<Octagon<T>*>(&other);
+    if (ptr) {
+        Figure<T>::_points = std::swap(other._points);
         return *this;
     } else {
         throw std::logic_error("can't assign different types of figures");

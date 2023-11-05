@@ -24,6 +24,8 @@ class Hexagon: public Figure<T> {
     public:
         Hexagon();
         Hexagon(const std::initializer_list<Point<T>> &list);
+        Hexagon(const Hexagon<Point<T>> &other);
+        Hexagon(Hexagon<Point<T>> &&other) noexcept;
         virtual ~Hexagon() noexcept = default;
 
         Point<T> getCenter() const;
@@ -32,17 +34,24 @@ class Hexagon: public Figure<T> {
         bool operator==(const Figure<T> &other) const;
         Hexagon<T> &operator = (Figure<T> &other);
     private:
-        bool valid(const std::initializer_list<Point<T>> &list);
+        bool valid(const Array<Point<T>> &tmp);
 };
 
 template <typename T>
 Hexagon<T>::Hexagon(): Figure<T>() {}
 
 template <typename T>
+Hexagon<T>::Hexagon(const Hexagon<Point<T>> &other): Figure<T>(other) {}
+
+template <typename T>
+Hexagon<T>::Hexagon(Hexagon<Point<T>> &&other) noexcept: Figure<T>(other) {}
+
+template <typename T>
 Hexagon<T>::Hexagon(const std::initializer_list<Point<T>> &list) {
+    Array<T> tmp(list);
     if (list.size() != 3) {
         throw std::range_error("invalid number of coordinates");
-    } else if (!valid(list)){
+    } else if (!valid(tmp)){
         throw std::range_error("Error! Hexagon Constructor: invalid points");
     } else {
         Array<Point<T>> tmp(list);
@@ -51,8 +60,8 @@ Hexagon<T>::Hexagon(const std::initializer_list<Point<T>> &list) {
 }
 
 template <typename T>
-bool Hexagon<T>::valid(const std::initializer_list<Point<T>> &list) {
-    for (size_t i = 0; i < Figs::Hexagon - 2; ++i) {
+bool Hexagon<T>::valid(const Array<Point<T>> &tmp) {
+    for (size_t i = 0; i < Figures::Hexagon - 2; ++i) {
         if (fabs(tmp[i].distance(tmp[i+1]) - tmp[i+1].distance(tmp[i+2])) > EPSILON) return false;
     }
     double l = tmp[0].distance(tmp[1]);

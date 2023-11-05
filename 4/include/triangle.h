@@ -24,6 +24,8 @@ class Triangle: public Figure<T> {
     public:
         Triangle();
         Triangle(const std::initializer_list<Point<T>> &list);
+        Triangle(const Triangle<Point<T>> &other);
+        Triangle(Triangle<Point<T>> &&other) noexcept;
         virtual ~Triangle() noexcept = default;
 
         Point<T> getCenter() const;
@@ -37,6 +39,12 @@ class Triangle: public Figure<T> {
 
 template <typename T>
 Triangle<T>::Triangle(): Figure<T>() {}
+
+template <typename T>
+Triangle<T>::Triangle(const Triangle<Point<T>> &other): Figure<T>(other) {}
+
+template <typename T>
+Triangle<T>::Triangle(Triangle<Point<T>> &&other) noexcept: Figure<T>(other) {}
 
 template <typename T>
 Triangle<T>::Triangle(const std::initializer_list<Point<T>> &list) {

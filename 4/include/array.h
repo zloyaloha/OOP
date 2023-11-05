@@ -38,6 +38,7 @@ class Array {
         void pop_back();
 
         Array<T> &operator=(const Array<T> &other);
+        Array<T> &operator=(Array<T> &&other) noexcept;
 };
 
 template <typename T>
@@ -125,5 +126,13 @@ Array<T> &Array<T>::operator=(const Array<T> &other) {
     _capacity = other._capacity;
     _array = std::make_unique<T[]>(_capacity);
     std::memcpy(_array.get(), other._array.get(), other.size() * sizeof(T));
+    return *this;
+}
+
+template <typename T>
+Array<T> &Array<T>::operator=(Array<T> &&other) noexcept{
+    std::swap(_size, other._size);
+    std::swap(_array, other._array);
+    std::swap(_capacity, other._capacity);
     return *this;
 }
