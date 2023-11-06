@@ -1,7 +1,10 @@
-#include "octagon.h"
-#include "triangle.h"
-#include "hexagon.h"
+#include "octagonSRC.h"
+#include "triangleSRC.h"
+#include "hexagonSRC.h"
 #include "figure-array.h"
+#include "arraySRC.h"
+#include "pointSRC.h"
+#include "figureSRC.h"
 #include <ostream>
 
 int main() {
@@ -9,8 +12,8 @@ int main() {
     std::initializer_list<Point<double>> listT{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)};
     Triangle<double> triag(listT);
     Octagon<double> oct{list};
-    Array<Figure<double>*> arr1({&triag, &oct});
-    getAreas(arr1);
-    // getCenteres(arr1);
-    // getCoords(arr1);
+    Array<Figure<double> *> arr1{&triag, &oct};
+    getCenteres(arr1);
+    getCoords(arr1);
+    std::cout << getAreas(arr1);
 }
