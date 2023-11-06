@@ -21,3 +21,4 @@ Array<Point<T>> Figure<T>::getPoints() const {
 
 template <typename T>
 Figure<T>::Figure(const std::initializer_list<Point<T>> &list) : _points(list) {}
+

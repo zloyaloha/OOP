@@ -13,13 +13,24 @@ Octagon<T>::Octagon(Octagon<Point<T>> &&other) noexcept: Figure<T>(other) {}
 template <typename T>
 Octagon<T>::Octagon(const std::initializer_list<Point<T>> &list) {
     const Array<Point<T>> tmp(list);
-    if (list.size() != 8) {
+    if (list.size() != Figures::Octagon) {
         throw std::range_error("invalid number of coordinates");
     } else if (!valid(tmp)){
         throw std::range_error("Error! Octagon Constructor: invalid points");
     } else {
         Array<Point<T>> tmp(list);
         Figure<T>::_points = list;
+    }
+}
+
+template <typename T>
+Octagon<T>::Octagon(const Array<Point<T>> &arr) {
+    if (arr.size() != Figures::Octagon) {
+        throw std::range_error("invalid number of coordinates");
+    } else if (!valid(arr)){
+        throw std::range_error("Error! Hexagon Constructor: invalid points");
+    } else {
+        Figure<T>::_points = arr;
     }
 }
 

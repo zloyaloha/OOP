@@ -5,6 +5,7 @@
 #include "arraySRC.h"
 #include "pointSRC.h"
 #include "figureSRC.h"
+#include "generatorSRC.h"
 #include <gtest/gtest.h>
 
 
@@ -52,11 +53,11 @@ TEST(PointEqualOperator, test_01) {
 }
 
 TEST(PointEqualOperator, test_02) {
-    ASSERT_TRUE(Point(1.012, 0) != Point(1.1, 0));
+    ASSERT_TRUE(Point<double>(1.012, 0) != Point<double>(1.1, 0));
 }
 
 TEST(PointEqualOperator, test_03) {
-    ASSERT_TRUE(Point(-4, 1.03) != Point(9.123, 12434));
+    ASSERT_TRUE(Point<double>(-4, 1.03) != Point<double>(9.123, 12434));
 }
 
 TEST(PointDistance, test_00) {
@@ -81,305 +82,305 @@ TEST(OperatorCopy, test_00) {
 }
 
 TEST(TriangleVectorConstructor, test00) {
-    ASSERT_THROW(Triangle<int> t(Array<Point> {Point(1,2), Point(3,4), Point(5,6)}), std::range_error);
+    ASSERT_THROW(Triangle<int> t(std::initializer_list<Point<int>> {Point(1,2), Point(3,4), Point(5,6)}), std::range_error);
 }
 
 TEST(TriangleVectorConstructor, test01) {
-    ASSERT_THROW(Triangle t(std::vector<Point> {Point(1,2), Point(3,4)}), std::range_error);
+    ASSERT_THROW(Triangle t(std::initializer_list<Point<int>>{Point(1,2), Point(3,4)}), std::range_error);
 }
 
 TEST(TriangleVectorConstructor, test02) {
-    ASSERT_THROW(Triangle t(std::vector<Point> {Point(1,2), Point(3,4), Point(5,6), Point(6,7)}), std::range_error);
+    ASSERT_THROW(Triangle t(std::initializer_list<Point<int>> {Point(1,2), Point(3,4), Point(5,6), Point(6,7)}), std::range_error);
 }
 
 TEST(TriangleVectorConstructor, test03) {
-    ASSERT_NO_THROW(Triangle t(GenerateFigures(3)));
+    ASSERT_NO_THROW(Triangle<double> t(GenerateFigures<double>(3)));
 }
 
 TEST(TriangleCopyConstructor, test00) {
-    Triangle t(GenerateFigures(3));
-    Triangle t1(t);
+    Triangle<double> t(GenerateFigures<double>(3));
+    Triangle<double> t1(t);
     ASSERT_TRUE(t == t1);
 }
 
 TEST(TriangleMoveConstructor, test00) {
-    Triangle t(GenerateFigures(3));
-    Triangle t1(std::move(t));
+    Triangle<double> t(GenerateFigures<double>(3));
+    Triangle<double> t1(std::move(t));
     ASSERT_TRUE(t == t1);
 }
 
 TEST(TriangleSquare, test00) {
-    Triangle t(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    Triangle<double> t(Array<Point<double>>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
     ASSERT_TRUE(fabs(double(t) - 3.2111) < EPSILON);
 }
 
 TEST(TriangleSquare, test01) {
-    Triangle t;
+    Triangle<double> t;
     ASSERT_THROW((double) t, std::range_error);
 }
 
 TEST(TriangleAverage, test00) {
-    Triangle t(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    Triangle<double> t(Array<Point<double>>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
     ASSERT_TRUE(t.getCenter() == Point(1.83, 2.28));
 }
 
 TEST(TriangleAverage, test01) {
-    Triangle t(std::vector<Point>{Point(-7.55,-3.16), Point(-5.63,-4.58), Point(-5.36, -2.21)});
-    ASSERT_TRUE(t.getCenter() == Point(-6.18,-3.31));
+    Triangle<double> t(Array<Point<double>>{Point(-7.55,-3.16), Point(-5.63,-4.58), Point(-5.36, -2.21)});
+    ASSERT_TRUE(t.getCenter() == Point<double>(-6.18,-3.31));
 }
 
 TEST(TriangleAverage, test02) {
-    Triangle t;
+    Triangle<double> t;
     ASSERT_THROW(t.getCenter(), std::range_error);
 }
 
 TEST(TriangleOperatorMove, test00) {
-    Triangle t(GenerateFigures(3)), t1;
+    Triangle<double> t(GenerateFigures<double>(3)), t1;
     t1 = std::move(t);
     ASSERT_TRUE(t == t1);
 }
 
 TEST(TriangleOperatorCopy, test00) {
-    Triangle t(GenerateFigures(3)), t1;
+    Triangle<double> t(GenerateFigures<double>(3)), t1;
     t1 = t;
     ASSERT_TRUE(t == t1);
 }
 
 TEST(HexagonVectorConstructor, test00) {
-    ASSERT_THROW(Hexagon t(std::vector<Point> {Point(1,2), Point(3,4), Point(5,6)}), std::range_error);
+    ASSERT_THROW(Hexagon<int> t(Array<Point<int>> {Point(1,2), Point(3,4), Point(5,6)}), std::range_error);
 }
 
 TEST(HexagonVectorConstructor, test01) {
-    ASSERT_THROW(Hexagon t(std::vector<Point> {Point(1,2), Point(3,4)}), std::range_error);
+    ASSERT_THROW(Hexagon<int> t(Array<Point<int>> {Point(1,2), Point(3,4)}), std::range_error);
 }
 
 TEST(HexagonVectorConstructor, test02) {
-    ASSERT_THROW(Hexagon t(std::vector<Point> {Point(1,2), Point(3,4), Point(5,6), Point(6,7)}), std::range_error);
+    ASSERT_THROW(Hexagon<int> t(Array<Point<int>> {Point(1,2), Point(3,4), Point(5,6), Point(6,7)}), std::range_error);
 }
 
 TEST(HexagonVectorConstructor, test03) {
-    ASSERT_NO_THROW(Hexagon t(GenerateFigures(6)));
+    ASSERT_NO_THROW(Hexagon<double> t(GenerateFigures<double>(6)));
 }
 
 TEST(HexagonCopyConstructor, test00) {
-    Hexagon t(GenerateFigures(6));
+    Hexagon<double> t(GenerateFigures<double>(6));
     Hexagon t1(t);
     ASSERT_TRUE(t == t1);
 }
 
 TEST(HexagonMoveConstructor, test00) {
-    Hexagon t(GenerateFigures(6));
+    Hexagon<double> t(GenerateFigures<double>(6));
     Hexagon t1(std::move(t));
     ASSERT_TRUE(t == t1);
 }
 
 TEST(HexagonSquare, test00) {
-    Hexagon t(std::vector<Point> {Point(-2,9), Point(9,-10), Point(30.95,-9.97), Point(41.91, 9.05), Point(30.91, 28.05), Point(8.95,28.03)});
+    Hexagon<double> t(Array<Point<double>> {Point<double>(-2,9), Point<double>(9,-10), Point(30.95,-9.97), Point(41.91, 9.05), Point(30.91, 28.05), Point(8.95,28.03)});
     ASSERT_TRUE(fabs(double(t) - 1252.27) < EPSILON);
 }
 
 TEST(HexagonSquare, test01) {
-    Hexagon t;
+    Hexagon<double> t;
     ASSERT_THROW((double) t, std::range_error);
 }
 
 TEST(HexagonAverage, test00) {
-    Hexagon t(std::vector<Point> {Point(-2,9), Point(9,-10), Point(30.95,-9.97), Point(41.91, 9.05), Point(30.91, 28.05), Point(8.95,28.03)});
+    Hexagon<double> t(Array<Point<double>> {Point<double>(-2,9), Point<double>(9,-10), Point(30.95,-9.97), Point(41.91, 9.05), Point(30.91, 28.05), Point(8.95,28.03)});
     ASSERT_TRUE(t.getCenter() == Point(19.95, 9.03));
 }
 
 TEST(HexagonAverage, test01) {
-    Hexagon t;
+    Hexagon<char> t;
     ASSERT_THROW(t.getCenter(), std::range_error);
 }
 
 TEST(HexagonOperatorMove, test00) {
-    Hexagon t(GenerateFigures(6)), t1;
+    Hexagon<double> t(GenerateFigures<double>(6)), t1;
     t1 = std::move(t);
     ASSERT_TRUE(t == t1);
 }
 
 TEST(HexagonOperatorCopy, test00) {
-    Hexagon t(GenerateFigures(6)), t1;
+    Hexagon<double> t(GenerateFigures<double>(6)), t1;
     t1 = t;
     ASSERT_TRUE(t == t1);
 }
 
 TEST(OctagonVectorConstructor, test00) {
-    ASSERT_THROW(Octagon t(std::vector<Point> {Point(1,2), Point(3,4), Point(5,6)}), std::range_error);
+    ASSERT_THROW(Octagon<int> t(Array<Point<int>> {Point(1,2), Point(3,4), Point(5,6)}), std::range_error);
 }
 
 TEST(OctagonVectorConstructor, test01) {
-    ASSERT_THROW(Octagon t(std::vector<Point> {Point(1,2), Point(3,4)}), std::range_error);
+    ASSERT_THROW(Octagon<int> t(Array<Point<int>> {Point(1,2), Point(3,4)}), std::range_error);
 }
 
 TEST(OctagonVectorConstructor, test02) {
-    ASSERT_THROW(Octagon t(std::vector<Point> {Point(1,2), Point(3,4), Point(5,6), Point(6,7)}), std::range_error);
+    ASSERT_THROW(Octagon<int> t(Array<Point<int>> {Point(1,2), Point(3,4), Point(5,6), Point(6,7)}), std::range_error);
 }
 
 TEST(OctagonVectorConstructor, test03) {
-    ASSERT_NO_THROW(Octagon t(GenerateFigures(8)));
+    ASSERT_NO_THROW(Octagon<double> t(GenerateFigures<double>(8)));
 }
 
 TEST(OctagonCopyConstructor, test00) {
-    Octagon t(GenerateFigures(8));
+    Octagon<double> t(GenerateFigures<double>(8));
     Octagon t1(t);
     ASSERT_TRUE(t == t1);
 }
 
 TEST(OctagonMoveConstructor, test00) {
-    Octagon t(GenerateFigures(8));
+    Octagon<double> t(GenerateFigures<double>(8));
     Octagon t1(std::move(t));
     ASSERT_TRUE(t == t1);
 }
 
 TEST(OctagonSquare, test00) {
-    Octagon t(std::vector<Point> {Point(-5,0), Point(9,-4), Point(21.73, 3.07), Point(25.73, 17.07), Point(18.66, 29.80), Point(4.66, 33.80), Point(-8.07, 26.73), Point(-12.07, 12.73)});
+    Octagon<double> t(Array<Point<double>> {Point<double>(-5,0), Point<double>(9,-4), Point(21.73, 3.07), Point(25.73, 17.07), Point(18.66, 29.80), Point(4.66, 33.80), Point(-8.07, 26.73), Point(-12.07, 12.73)});
     ASSERT_TRUE(double(t) - 1023.63 < EPSILON);
 }
 
 TEST(OctagonSquare, test01) {
-    Octagon t1;
+    Octagon<double> t1;
     ASSERT_THROW((double) t1, std::range_error);
 }
 
 TEST(OctagonAverage, test00) {
-    Octagon t(std::vector<Point> {Point(-5,0), Point(9,-4), Point(21.73, 3.07), Point(25.73, 17.07), Point(18.66, 29.80), Point(4.66, 33.80), Point(-8.07, 26.73), Point(-12.07, 12.73)});
+    Octagon<double> t(Array<Point<double>> {Point<double>(-5,0), Point<double>(9,-4), Point(21.73, 3.07), Point(25.73, 17.07), Point(18.66, 29.80), Point(4.66, 33.80), Point(-8.07, 26.73), Point(-12.07, 12.73)});
     ASSERT_TRUE(t.getCenter() == Point(6.83, 14.9));
 }
 
 TEST(OctagonAverage, test01) {
-    Octagon t;
+    Octagon<char> t;
     ASSERT_THROW(t.getCenter(), std::range_error);
 }
 
 TEST(OctagonOperatorMove, test00) {
-    Octagon t(GenerateFigures(8)), t1;
+    Octagon<double> t(GenerateFigures<double>(8)), t1;
     t1 = std::move(t);
     ASSERT_TRUE(t == t1);
 }
 
 TEST(OctagonOperatorCopy, test00) {
-    Octagon t(GenerateFigures(8)), t1;
+    Octagon<double> t(GenerateFigures<double>(8)), t1;
     t1 = t;
     ASSERT_TRUE(t == t1);
 }
 
 TEST(ArrayInitListConstructor, test00) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar({&o1, &o2, &h1, &t1});
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon<double> h1(GenerateFigures<double>(6));
+    Triangle<double> t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar({&o1, &o2, &h1, &t1});
     bool f = true;
-    if (*ar.getArr()[0] != o1) f = false;
-    if (*ar.getArr()[1] != o2) f = false;
-    if (*ar.getArr()[2] != h1) f = false;
-    if (*ar.getArr()[3] != t1) f = false;
+    if (*ar[0] != o1) f = false;
+    if (*ar[1] != o2) f = false;
+    if (*ar[2] != h1) f = false;
+    if (*ar[3] != t1) f = false;
     ASSERT_TRUE(f);
 }
 
 TEST(ArrayVectorConstructor, test00) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon<double> h1(GenerateFigures<double>(6));
+    Triangle<double> t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar (Array<Figure<double> *> {&o1, &o2, &h1, &t1});
     bool f = true;
-    if (*ar.getArr()[0] != o1) f = false;
-    if (*ar.getArr()[1] != o2) f = false;
-    if (*ar.getArr()[2] != h1) f = false;
-    if (*ar.getArr()[3] != t1) f = false;
+    if (*ar[0] != o1) f = false;
+    if (*ar[1] != o2) f = false;
+    if (*ar[2] != h1) f = false;
+    if (*ar[3] != t1) f = false;
     ASSERT_TRUE(f);
 }
 
 TEST(ArraySumSquare, test00) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
-    ASSERT_TRUE(fabs(double(ar) - (double(o1) + double(o2) + double(h1) + double(t1))) < EPSILON);
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon<double> h1(GenerateFigures<double>(6));
+    Triangle<double> t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar (Array<Figure<double> *> {&o1, &o2, &h1, &t1});
+    ASSERT_TRUE(fabs(getAreas(ar) - (double(o1) + double(o2) + double(h1) + double(t1))) < EPSILON);
 }
 
 TEST(ArraySumSquare, test01) {
-    FigureArray ar;
-    ASSERT_THROW((double) ar, std::range_error);
+    Array<Figure<double> *> ar;
+    ASSERT_TRUE(fabs(getAreas(ar) - 0) == 0);
 }
 
 TEST(ArrayPushBack, test00) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6)), h2(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon<double> h1(GenerateFigures<double>(6)), h2(GenerateFigures<double>(6));
+    Triangle<double> t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar (Array<Figure<double> *> {&o1, &o2, &h1, &t1});
     ar.push_back(&h2);
-    ASSERT_TRUE(*ar.getArr()[ar.getSize() - 1] == h2);
+    ASSERT_TRUE(*ar[ar.size() - 1] == h2);
 }
 
 TEST(ArrayPopBack, test00) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6)), h2(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon<double> h1(GenerateFigures<double>(6)), h2(GenerateFigures<double>(6));
+    Triangle<double> t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar (Array<Figure<double> *> {&o1, &o2, &h1, &t1});
     ar.pop_back();
-    ASSERT_TRUE(ar.getSize() == 3 && *ar.getArr()[ar.getSize() - 1] == h1);
+    ASSERT_TRUE(ar.size() == 3 && *ar[ar.size() - 1] == h1);
 }
 
 TEST(ArrayPopBack, test01) {
-    FigureArray ar;
+    Array<Figure<double> *> ar;
     ASSERT_THROW(ar.pop_back(), std::range_error);
 }
 
 TEST(ArrayErase, test00) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6)), h2(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon h1(GenerateFigures<double>(6)), h2(GenerateFigures<double>(6));
+    Triangle t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar (Array<Figure<double> *> {&o1, &o2, &h1, &t1});
     bool f = true;
     ar.erase(2);
-    if (*ar.getArr()[0] != o1) f = false;
-    if (*ar.getArr()[1] != o2) f = false;
-    if (*ar.getArr()[2] != t1) f = false;
-    ASSERT_TRUE(ar.getSize() == 3 && f);
+    if (*ar[0] != o1) f = false;
+    if (*ar[1] != o2) f = false;
+    if (*ar[2] != t1) f = false;
+    ASSERT_TRUE(ar.size() == 3 && f);
 }
 
 TEST(ArrayErase, test01) {
-    FigureArray ar;
+    Array<Figure<double> *> ar;
     ASSERT_THROW(ar.erase(1), std::range_error);
 }
 
 TEST(ArrayErase, test02) {
-    Octagon o1(GenerateFigures(8)), o2(GenerateFigures(8));
-    Hexagon h1(GenerateFigures(6)), h2(GenerateFigures(6));
-    Triangle t1(GenerateFigures(3));
-    FigureArray ar(std::vector<Figure *> {&o1, &o2, &h1, &t1});
+    Octagon<double> o1(GenerateFigures<double>(8)), o2(GenerateFigures<double>(8));
+    Hexagon h1(GenerateFigures<double>(6)), h2(GenerateFigures<double>(6));
+    Triangle t1(GenerateFigures<double>(3));
+    Array<Figure<double> *> ar (Array<Figure<double> *> {&o1, &o2, &h1, &t1});
     ASSERT_THROW(ar.erase(10), std::range_error);
 }
 
 TEST(FiguresEqualTest, test00) {
-    Triangle t(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
-    Triangle t1(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    Triangle<double> t(Array<Point<double>>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    Triangle<double> t1(Array<Point<double>>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
     ASSERT_TRUE(t == t1);
 }
 
 TEST(FiguresEqualTest, test01) {
-    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
-    Triangle t1(std::vector<Point>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
+    Triangle t(Array<Point<double>>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Triangle t1(Array<Point<double>>{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)});
     ASSERT_TRUE(t == t1);
 }
 
 TEST(FiguresEqualTest, test02) {
-    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
-    Hexagon h(GenerateFigures(6));
+    Triangle t(Array<Point<double>>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Hexagon h(GenerateFigures<double>(6));
     ASSERT_FALSE(t == h);
 }
 
 TEST(FiguresEqualTest, test03) {
-    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
-    Octagon o(GenerateFigures(8));
+    Triangle t(Array<Point<double>>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Octagon<double> o(GenerateFigures<double>(8));
     ASSERT_FALSE(t == o);
 }
 
 TEST(FiguresEqualTest, test04) {
-    Triangle t(std::vector<Point>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
-    Triangle t1(std::vector<Point>{Point(-7.55,-3.16), Point(-5.63,-4.58), Point(-5.36, -2.21)});
+    Triangle t(Array<Point<double>>{Point(3.37, 1.98), Point(0.79, 1.1), Point(1.32, 3.77)});
+    Triangle t1(Array<Point<double>>{Point(-7.55,-3.16), Point(-5.63,-4.58), Point(-5.36, -2.21)});
     ASSERT_FALSE(t == t1);
 }
 

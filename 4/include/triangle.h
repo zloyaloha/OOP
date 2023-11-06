@@ -26,6 +26,7 @@ class Triangle: public Figure<T> {
         Triangle(const std::initializer_list<Point<T>> &list);
         Triangle(const Triangle<Point<T>> &other);
         Triangle(Triangle<Point<T>> &&other) noexcept;
+        Triangle(const Array<Point<T>> &arr);
         virtual ~Triangle() noexcept = default;
 
         Point<T> getCenter() const;
@@ -34,5 +35,5 @@ class Triangle: public Figure<T> {
         bool operator==(const Figure<T> &other) const;
         Triangle<T> &operator = (Figure<T> &other);
     private:
-        bool valid(const std::initializer_list<Point<T>> &list);
+        bool valid(const Array<Point<T>> &list);
 };

@@ -26,6 +26,7 @@ class Hexagon: public Figure<T> {
         Hexagon(const std::initializer_list<Point<T>> &list);
         Hexagon(const Hexagon<Point<T>> &other);
         Hexagon(Hexagon<Point<T>> &&other) noexcept;
+        Hexagon(const Array<Point<T>> &arr);
         virtual ~Hexagon() noexcept = default;
 
         Point<T> getCenter() const;

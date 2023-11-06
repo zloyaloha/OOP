@@ -8,7 +8,6 @@
 template <typename T>
 double getAreas(const Array<Figure<T> *> & arrayFig) {
     double result = 0;
-    std::cout << *arrayFig[0];
     for (size_t i = 0; i < arrayFig.size(); ++i) {
         result += double (*arrayFig[i]);
     }
@@ -29,3 +28,4 @@ void getCoords(const Array<Figure<T>*> & arrayFig) {
         std::cout << (*arrayFig[i]) << std::endl;    
     }
 }
+

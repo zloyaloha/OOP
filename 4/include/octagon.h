@@ -30,6 +30,7 @@ class Octagon: public Figure<T> {
         Octagon(const std::initializer_list<Point<T>> &list);
         Octagon(const Octagon<Point<T>> &other);
         Octagon(Octagon<Point<T>> &&other) noexcept;
+        Octagon(const Array<Point<T>> &arr);
         virtual ~Octagon() noexcept = default;
 
         Point<T> getCenter() const;

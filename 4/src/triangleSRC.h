@@ -12,9 +12,10 @@ Triangle<T>::Triangle(Triangle<Point<T>> &&other) noexcept: Figure<T>::Figure<T>
 
 template <typename T>
 Triangle<T>::Triangle(const std::initializer_list<Point<T>> &list) {
-    if (list.size() != 3) {
+    const Array<Point<T>> tmp(list);
+    if (list.size() != Figures::Triangle) {
         throw std::range_error("invalid number of coordinates");
-    } else if (!valid(list)){
+    } else if (!valid(tmp)){
         throw std::range_error("Error! Triangle Constructor: invalid points");
     } else {
         Array<Point<T>> tmp(list);
@@ -23,7 +24,18 @@ Triangle<T>::Triangle(const std::initializer_list<Point<T>> &list) {
 }
 
 template <typename T>
-bool Triangle<T>::valid(const std::initializer_list<Point<T>> &list) {
+Triangle<T>::Triangle(const Array<Point<T>> &arr) {
+    if (arr.size() != Figures::Triangle) {
+        throw std::range_error("invalid number of coordinates");
+    } else if (!valid(arr)){
+        throw std::range_error("Error! Hexagon Constructor: invalid points");
+    } else {
+        Figure<T>::_points = arr;
+    }
+}
+
+template <typename T>
+bool Triangle<T>::valid(const Array<Point<T>> &list) {
     Array<Point<T>> tmp(list);
     double l1 = tmp[0].distance(tmp[1]), l2 = tmp[0].distance(tmp[2]), l3 = tmp[0].distance(tmp[2]);
     return fabs(l1 - l2) < EPSILON && fabs(l2 - l3) < EPSILON && fabs(l1 - l3) < EPSILON;
@@ -50,7 +62,7 @@ template <typename T>
 bool Triangle<T>::operator ==(const Figure<T> &other) const{
     const Triangle<T> *ptr = static_cast<const Triangle<T>*>(&other);
     if (ptr) {
-        return (Figure<T>::_points[0]).distance((Figure<T>::_points[1])) == (Figure<T>::other._points[0]).distance((Figure<T>::other._points[1]));
+        return (Figure<T>::_points[0]).distance((Figure<T>::_points[1])) == (other.getPoints()[0]).distance((other.getPoints()[1]));
     } else {
         return false;
     }
