@@ -8,12 +8,18 @@
 #include <ostream>
 
 int main() {
-    std::initializer_list<Point<double>> list{Point(-5.0,0.0), Point(9.0,-4.0), Point(21.73, 3.07), Point(25.73, 17.07), Point(18.66, 29.80), Point<double>(4.66, 33.80), Point<double>(-8.07, 26.73), Point(-12.07, 12.73)};
-    std::initializer_list<Point<double>> listT{Point(0.79, 1.1), Point(3.37, 1.98), Point(1.32, 3.77)};
-    Triangle<double> triag(listT);
-    Octagon<double> oct{list};
-    Array<Figure<double> *> arr1{&triag, &oct};
-    getCenteres(arr1);
-    getCoords(arr1);
-    std::cout << getAreas(arr1);
+    // Hexagon<double> h1;
+    // Octagon<double> o1;
+    // Triangle<double> t1;
+    // std::cout << "Print figures for array.\n";
+    // Array<Figure<double> *> ar({&h1,&o1,&t1});
+    // for (size_t i = 0; i < ar.size(); ++i) {
+    //     std::cin >> *ar[i];
+    // }
+    // for (size_t i = 0; i < ar.size(); ++i) {
+    //     std::cout << *ar[i];
+    // }
+    // for (size_t i = 0; i < ar.size(); ++i) {
+    //     std::cout << (*ar[i]).getCenter() << ' ' << double (*ar[i]) << std::endl;
+    // }
 }
