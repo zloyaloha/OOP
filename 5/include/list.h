@@ -7,22 +7,23 @@ template <typename T>
         private:
             struct Node {
                 T data;
-                std::shared_ptr<Node> next;
+                Node *next;
                 friend std::ostream &operator << (std::ostream &os, const Node &node) {
                     os << node.data << ", " << node.next;
                     return os;
                 }
                 Node();
                 Node(const T &value);
+                Node(const Node &other);
             };
-            std::shared_ptr<Node> head;
+            Node *head;
             size_t size;
         public:
 
             friend std::ostream &operator << (std::ostream &os, List<T> list) {
                 os << '[';
                 while (list.head) {
-                    os << '(' << *list.head.get() << ") ";
+                    os << '(' << *list.head << ") ";
                     list.head = list.head->next;
                 }
                 os << "]\n";
@@ -30,10 +31,9 @@ template <typename T>
             }
 
             List();
-            List(const std::vector<T> &v);
             List(const std::initializer_list<T> &l);
             List(const List &other);
-            List(const List &&other);
+            List(const List &&other) noexcept;
     };
 
 template <typename T>
@@ -46,25 +46,18 @@ template <typename T>
 List<T>::Node::Node(const T &value) : next(nullptr), data(value) {}
 
 template <typename T>
-List<T>::List(const std::vector<T> &v) {
-    head = std::make_shared<Node>();
-    size = v.size();
-    std::shared_ptr<Node> first = head;
-    for (int i = 0; i < v.size(); i++) {
-        std::shared_ptr<Node> tmp = std::make_shared<Node>(v[i]);
-        head->next = tmp;
-        head = head->next;
-    }
-    head = std::move(first);
+List<T>::Node::Node(const Node &other) {
+    data = other.data;
+    next = other.next;
 }
 
 template <typename T>
 List<T>::List(const std::initializer_list<T> &l) {
-    head = std::make_shared<Node>();
+    head = new Node();
     size = l.size();
-    std::shared_ptr<Node> first = head;
+    Node *first = head;
     for (const auto &el: l) {
-        std::shared_ptr<Node> tmp = std::make_shared<Node>(el);
+        Node *tmp = new Node(el);
         head->next = tmp;
         head = head->next;
     }
@@ -73,12 +66,18 @@ List<T>::List(const std::initializer_list<T> &l) {
 
 template <typename T>
 List<T>::List(const List &other) {
-    head = other.head;
     size = other.size;
+    head = new Node(*other.head);
+    Node *cur = head;
+    for (Node *t = other.head->next; t != nullptr; t = t->next) {
+        cur->next = new Node(*t);
+        cur = cur->next;
+    }
+    cur->next = nullptr;
 }
 
 template <typename T>
-List<T>::List(const List &&other) {
+List<T>::List(const List &&other) noexcept{
     size = other.size;
-    
+    head = other.head;
 }
