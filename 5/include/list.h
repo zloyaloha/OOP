@@ -42,16 +42,18 @@ template <typename T>
             List(const List &&other) noexcept;
             ~List() noexcept;
 
-            T &operator [] (size_t idx);
             int getSize() const;
             void push_back(const T &value);
             void remove();
             void pop();
             bool is_empty() const;
-            T & front();
-            T & back();
+            T & front() const;
+            T & back() const;
 
+            T &operator [] (size_t idx);
             bool operator==(const List<T> &other) const;
+            List<T> &operator=(List<T> &other);
+            List<T> &operator=(List<T> &&other) noexcept;
     };
 
 template <typename T>
@@ -188,12 +190,12 @@ void List<T>::pop(){
 }
 
 template<typename T>
-T &List<T>::front(){
+T &List<T>::front() const {
     return head.data;
 }
 
 template<typename T>
-T &List<T>::back(){
+T &List<T>::back() const {
     return tail.data;
 }
 
@@ -210,4 +212,27 @@ bool List<T>::operator==(const List<T> &other) const{
         tmp2 = tmp2->next;
     }
     return true;
+}
+
+template<typename T>
+List<T> &List<T>::operator=(List<T> &other) {
+    size = other.size;
+    head = new Node(*other.head);
+    Node *cur = head;
+    for (Node *t = other.head->next; t != nullptr; t = t->next) {
+        cur->next = new Node(*t);
+        cur = cur->next;
+    }
+    tail = cur;
+    cur->next = nullptr;
+    return *this;
+}
+
+template<typename T>
+List<T> &List<T>::operator=(List<T> &&other) noexcept{
+    size = other.size; other.size = 0;
+    head = other.head; other.head = nullptr;
+    tail = other.tail; other.tail = nullptr;
+    
+    return *this;
 }
