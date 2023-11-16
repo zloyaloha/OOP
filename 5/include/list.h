@@ -16,7 +16,7 @@ template <typename T>
                 Node(const T &value);
                 Node(const Node &other);
                 ~Node() = default;
-
+                
                 T& get(size_t idx);
                 bool operator==(const Node &other) const;
             };
@@ -24,7 +24,7 @@ template <typename T>
             Node *tail;
             size_t size;
         public:
-
+        
             friend std::ostream &operator << (std::ostream &os, List<T> &list) {
                 os << '[';
                 Node *cur = list.head;
@@ -54,6 +54,22 @@ template <typename T>
             bool operator==(const List<T> &other) const;
             List<T> &operator=(List<T> &other);
             List<T> &operator=(List<T> &&other) noexcept;
+            
+            class Iterator {
+                friend class List;
+                private:
+                    Node * item;
+                public:
+
+                    Iterator(Iterator &other);
+                    Iterator(Node *node);
+
+                    List::Iterator &operator ++();
+                    T& operator* ();
+                    T* operator-> ();
+                    bool operator ==(const Iterator &other);
+                    bool operator !=(const Iterator &other);
+            };
     };
 
 template <typename T>
@@ -139,7 +155,7 @@ int List<T>::getSize () const{
 
 template<typename T>
 bool List<T>::is_empty() const {
-    return size == 0 ? true : false;
+    return size == 0;
 }
 
 
@@ -235,4 +251,40 @@ List<T> &List<T>::operator=(List<T> &&other) noexcept{
     tail = other.tail; other.tail = nullptr;
     
     return *this;
+}
+
+template <typename T>
+List<T>::Iterator::Iterator(Iterator &other) : item(other.item) {}
+
+template <typename T>
+List<T>::Iterator::Iterator(Node *node) : item(node) {}
+
+template <typename T>
+typename List<T>::Iterator &List<T>::Iterator::operator++() {
+    item = &(item->next);
+    return *this;
+}
+
+template <typename T>
+T& List<T>::Iterator::operator *() {
+    return *item->data;
+}
+
+template <typename T>
+bool List<T>::Iterator::operator == (const Iterator &other) {
+    if (other.item != nullptr) {
+        return item == other.item;
+    } else {
+        return false;
+    }
+}
+
+template <typename T>
+bool List<T>::Iterator::operator != (const Iterator &other) {
+    return !(other == *this);
+}
+
+template <typename T>
+T* List<T>::Iterator::operator -> () {
+    return &(item->data);
 }
