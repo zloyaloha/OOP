@@ -58,18 +58,25 @@ template <typename T>
             class Iterator {
                 friend class List;
                 private:
-                    Node * item;
+                    Node *item;
                 public:
 
                     Iterator(Iterator &other);
+                    Iterator(Iterator &&other) noexcept;
                     Iterator(Node *node);
-
+                    ~Iterator() = default;
+                    
                     List::Iterator &operator ++();
                     T& operator* ();
                     T* operator-> ();
-                    bool operator ==(const Iterator &other);
-                    bool operator !=(const Iterator &other);
+                    bool operator ==(const Iterator &other) const;
+                    bool operator !=(const Iterator &other) const;
+                    List::Iterator &operator =(Iterator &other);
+                    List::Iterator &operator =(Iterator &&other) noexcept;
             };
+
+            List::Iterator begin();
+            List::Iterator end();
     };
 
 template <typename T>
@@ -207,12 +214,12 @@ void List<T>::pop(){
 
 template<typename T>
 T &List<T>::front() const {
-    return head.data;
+    return head->data;
 }
 
 template<typename T>
 T &List<T>::back() const {
-    return tail.data;
+    return tail->data;
 }
 
 template<typename T>
@@ -245,7 +252,7 @@ List<T> &List<T>::operator=(List<T> &other) {
 }
 
 template<typename T>
-List<T> &List<T>::operator=(List<T> &&other) noexcept{
+List<T> &List<T>::operator=(List<T> &&other) noexcept {
     size = other.size; other.size = 0;
     head = other.head; other.head = nullptr;
     tail = other.tail; other.tail = nullptr;
@@ -257,34 +264,55 @@ template <typename T>
 List<T>::Iterator::Iterator(Iterator &other) : item(other.item) {}
 
 template <typename T>
+List<T>::Iterator::Iterator(Iterator &&other) noexcept {
+    item = std::move(other.item);
+}
+
+template <typename T>
 List<T>::Iterator::Iterator(Node *node) : item(node) {}
 
 template <typename T>
 typename List<T>::Iterator &List<T>::Iterator::operator++() {
-    item = &(item->next);
+    item = item->next;
     return *this;
 }
 
 template <typename T>
 T& List<T>::Iterator::operator *() {
-    return *item->data;
+    return item->data;
 }
 
 template <typename T>
-bool List<T>::Iterator::operator == (const Iterator &other) {
-    if (other.item != nullptr) {
-        return item == other.item;
-    } else {
-        return false;
-    }
+bool List<T>::Iterator::operator == (const Iterator &other) const {
+    return item == other.item
 }
 
 template <typename T>
-bool List<T>::Iterator::operator != (const Iterator &other) {
+bool List<T>::Iterator::operator != (const Iterator &other) const{
     return !(other == *this);
 }
 
 template <typename T>
 T* List<T>::Iterator::operator -> () {
     return &(item->data);
+}
+
+template <typename T>
+typename List<T>::Iterator &List<T>::Iterator::operator = (typename List<T>::Iterator &other) {
+    item = other.item;
+}
+
+template <typename T>
+typename List<T>::Iterator &List<T>::Iterator::operator = (typename List<T>::Iterator &&other) noexcept{
+    item = std::move(other.item);
+}
+
+template <typename T>
+typename List<T>::Iterator List<T>::begin() {
+    return Iterator(head);
+}
+
+template <typename T>
+typename List<T>::Iterator List<T>::end() {
+    return Iterator(tail);
 }
