@@ -25,7 +25,7 @@ template <typename T>
             size_t size;
         public:
         
-            friend std::ostream &operator << (std::ostream &os, List<T> &list) {
+            friend std::ostream &operator << (std::ostream &os, const List<T> &list) {
                 os << '[';
                 Node *cur = list.head;
                 while (cur->next) {
@@ -67,6 +67,8 @@ template <typename T>
                     ~Iterator() = default;
                     
                     List::Iterator &operator ++();
+                    List::Iterator operator ++(int);
+                    List::Iterator &operator + (size_t rhs);
                     T& operator* ();
                     T* operator-> ();
                     bool operator ==(const Iterator &other) const;
@@ -77,6 +79,7 @@ template <typename T>
 
             List::Iterator begin();
             List::Iterator end();
+            void insert(List::Iterator iter, const T& value);
     };
 
 template <typename T>
@@ -278,13 +281,26 @@ typename List<T>::Iterator &List<T>::Iterator::operator++() {
 }
 
 template <typename T>
+typename List<T>::Iterator List<T>::Iterator::operator++(int) {
+    List::Iterator tmp = *this; 
+    ++(tmp); 
+    return tmp;
+}
+
+template <typename T>
+typename List<T>::Iterator &List<T>::Iterator::operator+(size_t rhs) {
+    for (size_t i = 0; i < rhs; i++) ++item;
+    return *this;
+}
+
+template <typename T>
 T& List<T>::Iterator::operator *() {
     return item->data;
 }
 
 template <typename T>
 bool List<T>::Iterator::operator == (const Iterator &other) const {
-    return item == other.item
+    return item == other.item;
 }
 
 template <typename T>
@@ -315,4 +331,18 @@ typename List<T>::Iterator List<T>::begin() {
 template <typename T>
 typename List<T>::Iterator List<T>::end() {
     return Iterator(tail);
+}
+
+template <typename T>
+void List<T>::insert (List::Iterator iter, const T& value) {
+    auto jter = this->begin();
+    Node *cur = head;
+    while (iter != jter) {
+        cur = cur->next;
+        ++jter;
+    }
+    Node *tmp = cur->next;
+    cur->next = new Node(value);
+    cur->next->next = tmp;
+    size++;
 }
