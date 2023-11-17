@@ -80,6 +80,7 @@ template <typename T>
             List::Iterator begin();
             List::Iterator end();
             void insert(List::Iterator iter, const T& value);
+            void erase(List::Iterator iter);
     };
 
 template <typename T>
@@ -345,4 +346,18 @@ void List<T>::insert (List::Iterator iter, const T& value) {
     cur->next = new Node(value);
     cur->next->next = tmp;
     size++;
+}
+
+template <typename T>
+void List<T>::erase(List::Iterator iter) {
+    auto jter = this->begin();
+    Node *cur = head;
+    while (iter != jter) {
+        cur = cur->next;
+        ++jter;
+    }
+    Node *tmp = cur->next->next;
+    delete cur->next;
+    cur->next = tmp;
+    size--;
 }
