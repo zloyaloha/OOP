@@ -210,6 +210,284 @@ TEST(ListRemove, TEST_02) {
     ASSERT_TRUE(l1 == l);
 }
 
+TEST(ListRemove, TEST_03) {
+    List<int> l{1,2,3};
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9); 
+    l.remove();
+    l.remove();
+    l.remove();
+    l.remove();
+    List<int> l1{3,2,0,-9};
+    ASSERT_TRUE(l1 == l);
+}
+
+TEST(ListRemove, TEST_04) {
+    List<int> l;
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9); 
+    l.remove();
+    l.remove();
+    l.remove();
+    l.remove();
+    List<int> l1{-9};
+    ASSERT_TRUE(l1 == l);
+}
+
+TEST(ListRemove, TEST_05) {
+    List<int> l;
+    ASSERT_ANY_THROW(l.remove());
+}
+
+TEST(ListPopBack, TEST_01) {
+    List<int> l;
+    l.emplace(1);
+    l.emplace(3);
+    l.emplace(2);
+    l.emplace(0);
+    l.emplace(-9); 
+    l.pop();
+    l.pop();
+    List<int> l1{-9,0,2};
+    ASSERT_TRUE(l1 == l);
+}
+
+TEST(ListPopBack, TEST_02) {
+    List<int> l{1,2,3};
+    l.emplace(1);
+    l.emplace(3);
+    l.emplace(2);
+    l.emplace(0);
+    l.emplace(-9); 
+    l.pop();
+    l.pop();
+    l.pop();
+    l.pop();
+    l.pop();
+    List<int> l1{-9,0,2};
+    ASSERT_TRUE(l1 == l);
+}
+
+TEST(ListPopBack, TEST_03) {
+    List<int> l{1,2,3};
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9); 
+    l.pop();
+    l.pop();
+    l.pop();
+    l.pop();
+    List<int> l1{1,2,3,1};
+    ASSERT_TRUE(l1 == l);
+}
+
+TEST(ListPopBack, TEST_04) {
+    List<int> l;
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9); 
+    l.pop();
+    l.pop();
+    l.pop();
+    l.pop();
+    List<int> l1{1};
+    ASSERT_TRUE(l1 == l);
+}
+
+TEST(ListPopBack, TEST_05) {
+    List<int> l;
+    ASSERT_ANY_THROW(l.pop());
+}
+
+TEST(IsEmpty, TEST_01) {
+    List<int> l;
+    ASSERT_TRUE(l.is_empty());
+}
+
+TEST(IsEmpty, TEST_02) {
+    List<int> l{1,2};
+    ASSERT_FALSE(l.is_empty());
+}
+
+TEST(IsEmpty, TEST_03) {
+    List<int> l;
+    l.push_back(1);
+    ASSERT_FALSE(l.is_empty());
+}
+
+TEST(IsEmpty, TEST_04) {
+    List<int> l;
+    l.emplace(1);
+    ASSERT_FALSE(l.is_empty());
+}
+
+TEST(IsEmpty, TEST_05) {
+    List<int> l;
+    l.emplace(1);
+    l.pop();
+    ASSERT_TRUE(l.is_empty());
+}
+
+TEST(IsEmpty, TEST_06) {
+    List<int> l;
+    l.push_back(1);
+    l.pop();
+    ASSERT_TRUE(l.is_empty());
+}
+
+TEST(Front, TEST_01) {
+    List<int> l;
+    ASSERT_ANY_THROW(l.front());
+}
+
+TEST(Front, TEST_02) {
+    List<int> l{1,2,3,4,5};
+    ASSERT_TRUE(l.front() == 1);
+}
+
+TEST(Back, TEST_01) {
+    List<int> l;
+    ASSERT_ANY_THROW(l.back());
+}
+
+TEST(Back, TEST_02) {
+    List<int> l{1,2,3,4,5};
+    ASSERT_TRUE(l.back() == 5);
+}
+
+TEST(IndexOperator, TEST_01) {
+    List<int> l;
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9);
+    ASSERT_TRUE(l[3] == 0);
+}
+
+TEST(IndexOperator, TEST_02) {
+    List<int> l;
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9);
+    l.pop();
+    l.pop();
+    l.pop();
+    l.pop();
+    l.pop();
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9);
+    ASSERT_TRUE(l[1] == 3);
+}
+
+TEST(IndexOperator, TEST_03) {
+    List<int> l;
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9);
+    l.remove();
+    l.remove();
+    l.remove();
+    l.remove();
+    l.remove();
+    l.push_back(1);
+    l.push_back(3);
+    l.push_back(2);
+    l.push_back(0);
+    l.push_back(-9);
+    ASSERT_TRUE(l[4] == -9);
+}
+
+TEST(IndexOperator, TEST_04) {
+    List<int> l;
+    l.emplace(1);
+    l.emplace(3);
+    l.emplace(2);
+    l.emplace(0);
+    l.emplace(-9);
+    l.remove();
+    l.remove();
+    l.remove();
+    l.remove();
+    l.remove();
+    l.emplace(1);
+    l.emplace(3);
+    l.emplace(2);
+    l.emplace(0);
+    l.emplace(-9);
+    ASSERT_TRUE(l[3] == 3);
+}
+
+TEST(IndexOperator, TEST_05) {
+    List<int> l{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    ASSERT_TRUE(l[8] == 7);
+}
+
+TEST(IndexOperator, TEST_06) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    List<int> l(l1);
+    ASSERT_TRUE(l[8] == 7);
+}
+
+TEST(EqualOperator, TEST_01) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    List<int> l(l1);
+    ASSERT_TRUE(l == l1);
+}
+
+TEST(EqualOperator, TEST_02) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    List<int> l{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    ASSERT_TRUE(l == l1);
+}
+
+TEST(CopyAssignmentOperator, TEST_01) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    List<int> l;
+    l = l1;
+    ASSERT_TRUE(l == l1);
+}
+
+TEST(CopyAssignmentOperator, TEST_02) {
+    List<int> l1;
+    List<int> l;
+    ASSERT_TRUE(l == l1);
+}
+
+TEST(MoveAssignmentOperator, TEST_01) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    List<int> l;
+    List<int> l2{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    l = std::move(l1);
+    ASSERT_TRUE(l == l2);
+}
+
+TEST(MoveAssignmentOperator, TEST_02) {
+    List<int> l1;
+    List<int> l;
+    List<int> l2;
+    l = std::move(l1);
+    ASSERT_TRUE(l == l2);
+}
+
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

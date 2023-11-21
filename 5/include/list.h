@@ -219,6 +219,7 @@ void List<T, Allocator>::pop(){
     }
     if (head == tail) {
         remove();
+        return;
     }
     _size--;
     Node<T> *tmp = head;
@@ -230,11 +231,17 @@ void List<T, Allocator>::pop(){
 
 template<typename T, class Allocator>
 T &List<T, Allocator>::front() const {
+    if (this->is_empty()) {
+        throw std::logic_error("List is empty");
+    }
     return head->data;
 }
 
 template<typename T, class Allocator>
 T &List<T, Allocator>::back() const {
+    if (this->is_empty()) {
+        throw std::logic_error("List is empty");
+    }
     return tail->data;
 }
 
@@ -276,6 +283,7 @@ List<T, Allocator> &List<T, Allocator>::operator=(List<T, Allocator> &&other) no
     _size = other._size; other._size = 0;
     head = other.head; other.head = nullptr;
     tail = other.tail; other.tail = nullptr;
+    _alloc = std::move(other._alloc);
     return *this;
 }
 

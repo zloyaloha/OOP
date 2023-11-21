@@ -23,10 +23,12 @@ class PoolAllocator {
         using size_type = std::size_t;
 
         PoolAllocator();
-        PoolAllocator(PoolAllocator &&other);
+        PoolAllocator(PoolAllocator &&other) noexcept;
 
         pointer allocate(size_type n);
         void deallocate(pointer ptr, size_type n);
+
+        PoolAllocator &operator =(PoolAllocator &&other) noexcept;
 
         template<typename U, typename... Args>
         void construct(U* p, Args&&... args) {
@@ -46,9 +48,16 @@ PoolAllocator<T>::PoolAllocator(){
 }
 
 template <typename T>
-PoolAllocator<T>::PoolAllocator(PoolAllocator &&other){
+PoolAllocator<T>::PoolAllocator(PoolAllocator &&other) noexcept{
     _pool = std::move(other._pool);
     _free = std::move(other._free);
+}
+
+template <typename T>
+PoolAllocator<T> &PoolAllocator<T>::operator =(PoolAllocator &&other) noexcept{
+    _pool = std::move(other._pool);
+    _free = std::move(other._free);
+    return *this;
 }
 
 template <typename T>
