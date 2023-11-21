@@ -1,48 +1,37 @@
+#pragma once
 #include <vector>
 #include <iostream>
 #include <memory>
+#include "allocator.h"
+#include "node.h"
 
-template <typename T>
+template <typename T, class Allocator = PoolAllocator<Node<T>>>
     class List {
         private:
-            struct Node {
-                T data;
-                Node *next;
-                friend std::ostream &operator << (std::ostream &os, const Node &node) {
-                    os << node.data << ", " << node.next;
-                    return os;
-                }
-                Node();
-                Node(const T &value);
-                Node(const Node &other);
-                ~Node() = default;
-                
-                T& get(size_t idx);
-                bool operator==(const Node &other) const;
-            };
-            Node *head;
-            Node *tail;
-            size_t size;
+            Node<T> *head;
+            Node<T> *tail;
+            size_t _size;
+            Allocator _alloc;
         public:
         
-            friend std::ostream &operator << (std::ostream &os, const List<T> &list) {
+            friend std::ostream &operator << (std::ostream &os, const List<T, Allocator> &list) {
                 os << '[';
-                Node *cur = list.head;
+                Node<T> *cur = list.head;
                 while (cur->next) {
-                    os << cur->data << ", ";
+                    os << *cur << ", ";
                     cur = cur->next;
                 }
-                os << cur->data << ']' << std::endl;
+                os << *cur << ']' << std::endl;
                 return os;
             }
 
             List();
             List(const std::initializer_list<T> &l);
             List(const List &other);
-            List(const List &&other) noexcept;
+            List(List &&other) noexcept;
             ~List() noexcept;
 
-            int getSize() const;
+            size_t size() const;
             void push_back(const T &value);
             void emplace(const T &value);
             void remove();
@@ -52,19 +41,19 @@ template <typename T>
             T & back() const;
 
             T &operator [] (size_t idx);
-            bool operator==(const List<T> &other) const;
-            List<T> &operator=(List<T> &other);
-            List<T> &operator=(List<T> &&other) noexcept;
+            bool operator==(const List<T, Allocator> &other) const;
+            List<T, Allocator> &operator=(List<T, Allocator> &other);
+            List<T, Allocator> &operator=(List<T, Allocator> &&other) noexcept;
             
             class Iterator {
                 friend class List;
                 private:
-                    Node *item;
+                    Node<T> *item;
                 public:
 
                     Iterator(Iterator &other);
                     Iterator(Iterator &&other) noexcept;
-                    Iterator(Node *node);
+                    Iterator(Node<T> *node);
                     ~Iterator() = default;
                     
                     List::Iterator &operator ++();
@@ -81,12 +70,12 @@ template <typename T>
             class ConstIterator {
                 friend class List;
                 private:
-                    const Node *item;
+                    const Node<T> *item;
                 public:
 
                     ConstIterator(ConstIterator &other);
                     ConstIterator(ConstIterator &&other) noexcept;
-                    ConstIterator(Node *node);
+                    ConstIterator(Node<T> *node);
                     ~ConstIterator() = default;
                     
                     const List::ConstIterator &operator ++();
@@ -107,96 +96,80 @@ template <typename T>
             void erase(List::Iterator iter);
     };
 
-template <typename T>
-List<T>::List() : head(nullptr), size(0), tail(nullptr) {}
+template <typename T, class Allocator>
+List<T, Allocator>::List() : head(nullptr), _size(0), tail(nullptr), _alloc() {}
 
-template <typename T>
-List<T>::Node::Node() : next(nullptr), data() {}
-
-template <typename T>
-List<T>::Node::Node(const T &value) : next(nullptr), data(value) {}
-
-template <typename T>
-List<T>::Node::Node(const Node &other) {
-    data = other.data;
-    next = other.next;
-}
-
-template<typename T>
-T& List<T>::Node::get(size_t idx) {
-    if (idx == 0) return data;
-    if (next) return next->get(--idx);
-    throw std::range_error("Out of range");
-}
-
-template<typename T>
-bool List<T>::Node::operator==(const Node &other) const {
-    return data == other.data;
-}
-
-template <typename T>
-List<T>::List(const std::initializer_list<T> &l) {
-    head = new Node(*l.begin());
-    size = l.size();
-    Node *cur = head;
+template <typename T, class Allocator>
+List<T, Allocator>::List(const std::initializer_list<T> &l) {
+    head = _alloc.allocate(1);
+    head->data = *l.begin();
+    _size = l.size();
+    Node<T> *cur = head;
     for (auto el = l.begin() + 1; el != l.end(); ++el) {
-        cur->next = new Node(*el);
+        cur->next = _alloc.allocate(1);
+        cur->next->data = *el;
         cur = cur->next;
     }
     tail = cur;
     cur->next = nullptr;
 }
 
-template <typename T>
-List<T>::List(const List &other) {
-    size = other.size;
-    head = new Node(*other.head);
-    Node *cur = head;
-    for (Node *t = other.head->next; t != nullptr; t = t->next) {
-        cur->next = new Node(*t);
+template <typename T, class Allocator>
+List<T, Allocator>::List(const List &other) {
+    _size = other._size;
+    head = _alloc.allocate(1);
+    head->data = other.head->data;
+    head->next = other.head->next;
+    Node<T> *cur = head;
+    for (Node<T> *t = other.head->next; t != nullptr; t = t->next) {
+        cur->next = _alloc.allocate(1);
+        cur->next->data = t->data;
+        cur->next->next = t->next;
         cur = cur->next;
     }
     tail = cur;
     cur->next = nullptr;
 }
 
-template <typename T>
-List<T>::~List() noexcept{
+template <typename T, class Allocator>
+List<T, Allocator>::~List() noexcept{
     while (head != NULL) {
         remove();
     }
 }
 
-template <typename T>
-List<T>::List(const List &&other) noexcept{
-    size = other.size;
-    head = other.head;
-    tail = other.tail;
+template <typename T, class Allocator>
+List<T, Allocator>::List(List &&other) noexcept : _alloc(std::move(other._alloc)) {
+    _size = other._size; other._size = 0;
+    head = other.head; other.head = nullptr;
+    tail = other.tail; other.tail = nullptr;
 }
 
-template<typename T>
-T& List<T>::operator[] (size_t idx) {
-    if (size < idx) {
+template<typename T, class Allocator>
+T& List<T, Allocator>::operator[] (size_t idx) {
+    if (_size < idx) {
         throw std::range_error("Out of range");
     } else {
         return head->get(idx);
     }
 }
 
-template<typename T>
-int List<T>::getSize () const{
-    return size;
+template<typename T, class Allocator>
+size_t List<T, Allocator>::size () const{
+    return _size;
 }
 
-template<typename T>
-bool List<T>::is_empty() const {
-    return size == 0;
+template<typename T, class Allocator>
+bool List<T, Allocator>::is_empty() const {
+    return _size == 0;
 }
 
 
-template<typename T>
-void List<T>::push_back (const T &value){
-    Node *tmp = new Node(value);
+template<typename T, class Allocator>
+void List<T, Allocator>::push_back (const T &value){
+    Node<T> *tmp = _alloc.allocate(1);
+    tmp->data = value;
+    tmp->next = nullptr;
     if (this->is_empty()) {
         head = tmp;
         tail = tmp;
@@ -204,68 +177,74 @@ void List<T>::push_back (const T &value){
         tail->next = tmp;
         tail = tmp;
     }
-    size++;
+    _size++;
 }
 
-template<typename T>
-void List<T>::emplace (const T &value){
-    Node *tmp = new Node(head->data);
-    tmp->next = head->next;
-    head->data = value;
-    head->next = tmp;
-    size++;
+template<typename T, class Allocator>
+void List<T, Allocator>::emplace (const T &value){
+    Node<T> *tmp = _alloc.allocate(1);
+    tmp->next = nullptr;
+    tmp->data = value;
+    if (this->is_empty()) {
+        head = tmp;
+        tail = tmp;
+    } else {
+        tmp->next = head;
+        head = tmp;
+    }
+    _size++;
 }
 
-template<typename T>
-void List<T>::remove(){
+template<typename T, class Allocator>
+void List<T, Allocator>::remove(){
     if (this->is_empty()) {
         throw std::logic_error("Can't remove from empty list");
     }
     if (head == tail) {
-        delete tail;
-        head = tail = NULL;
-        size = 0;
+        _alloc.deallocate(tail, 1);
+        head = tail = nullptr;
+        _size = 0;
         return;
     }
-    Node *tmp = head;
+    Node<T> *tmp = head;
     head = tmp->next;
-    size--;
-    delete tmp;
+    _size--;
+    _alloc.deallocate(tmp, 1);
 }
 
-template<typename T>
-void List<T>::pop(){
+template<typename T, class Allocator>
+void List<T, Allocator>::pop(){
     if (this->is_empty()) {
         throw std::logic_error("Can't remove from empty list");
     }
     if (head == tail) {
         remove();
     }
-    size--;
-    Node *tmp = head;
+    _size--;
+    Node<T> *tmp = head;
     while (tmp->next != tail) tmp = tmp->next;
     tmp->next = nullptr;
-    delete tail;
+    _alloc.deallocate(tail, 1);
     tail = tmp;
 }
 
-template<typename T>
-T &List<T>::front() const {
+template<typename T, class Allocator>
+T &List<T, Allocator>::front() const {
     return head->data;
 }
 
-template<typename T>
-T &List<T>::back() const {
+template<typename T, class Allocator>
+T &List<T, Allocator>::back() const {
     return tail->data;
 }
 
-template<typename T>
-bool List<T>::operator==(const List<T> &other) const{
-    if (size != other.getSize()) {
+template<typename T, class Allocator>
+bool List<T, Allocator>::operator==(const List<T, Allocator> &other) const{
+    if (_size != other.size()) {
         return false;
     }
-    Node *tmp1 = head;
-    Node *tmp2 = other.head;
+    Node<T> *tmp1 = head;
+    Node<T> *tmp2 = other.head;
     while (tmp1) {
         if (!(*tmp1 == *tmp2)) return false;
         tmp1 = tmp1->next;
@@ -274,13 +253,17 @@ bool List<T>::operator==(const List<T> &other) const{
     return true;
 }
 
-template<typename T>
-List<T> &List<T>::operator=(List<T> &other) {
-    size = other.size;
-    head = new Node(*other.head);
-    Node *cur = head;
-    for (Node *t = other.head->next; t != nullptr; t = t->next) {
-        cur->next = new Node(*t);
+template<typename T, class Allocator>
+List<T, Allocator> &List<T, Allocator>::operator=(List<T, Allocator> &other) {
+    _size = other._size;
+    head = _alloc.allocate(1);
+    head->data = other.head->data;
+    head->next = other.head->next;
+    Node<T> *cur = head;
+    for (Node<T> *t = other.head->next; t != nullptr; t = t->next) {
+        cur->next = _alloc.allocate(1);
+        cur->next->data = t->data;
+        cur->next->next = t->next;
         cur = cur->next;
     }
     tail = cur;
@@ -288,27 +271,27 @@ List<T> &List<T>::operator=(List<T> &other) {
     return *this;
 }
 
-template<typename T>
-List<T> &List<T>::operator=(List<T> &&other) noexcept {
-    size = other.size; other.size = 0;
+template<typename T, class Allocator>
+List<T, Allocator> &List<T, Allocator>::operator=(List<T, Allocator> &&other) noexcept {
+    _size = other._size; other._size = 0;
     head = other.head; other.head = nullptr;
     tail = other.tail; other.tail = nullptr;
     return *this;
 }
 
-template <typename T>
-List<T>::Iterator::Iterator(Iterator &other) : item(other.item) {}
+template <typename T, class Allocator>
+List<T, Allocator>::Iterator::Iterator(Iterator &other) : item(other.item) {}
 
-template <typename T>
-List<T>::Iterator::Iterator(Iterator &&other) noexcept {
+template <typename T, class Allocator>
+List<T, Allocator>::Iterator::Iterator(Iterator &&other) noexcept {
     item = std::move(other.item);
 }
 
-template <typename T>
-List<T>::Iterator::Iterator(Node *node) : item(node) {}
+template <typename T, class Allocator>
+List<T, Allocator>::Iterator::Iterator(Node<T> *node) : item(node) {}
 
-template <typename T>
-typename List<T>::Iterator &List<T>::Iterator::operator++() {
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator++() {
     if (item == nullptr) {
         throw std::range_error("Out of range");
     }
@@ -316,8 +299,8 @@ typename List<T>::Iterator &List<T>::Iterator::operator++() {
     return *this;
 }
 
-template <typename T>
-typename List<T>::Iterator List<T>::Iterator::operator++(int) {
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator List<T, Allocator>::Iterator::operator++(int) {
     List::Iterator tmp = *this;
     if (tmp == nullptr) {
         throw std::range_error("Out of range");
@@ -326,8 +309,8 @@ typename List<T>::Iterator List<T>::Iterator::operator++(int) {
     return tmp;
 }
 
-template <typename T>
-typename List<T>::Iterator &List<T>::Iterator::operator+(size_t rhs) {
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator+(size_t rhs) {
     for (size_t i = 0; i < rhs; i++) {
         if (item == nullptr) {
             throw std::range_error("Out of range");
@@ -340,66 +323,67 @@ typename List<T>::Iterator &List<T>::Iterator::operator+(size_t rhs) {
     return *this;
 }
 
-template <typename T>
-T& List<T>::Iterator::operator *() const {
+template <typename T, class Allocator>
+T& List<T, Allocator>::Iterator::operator *() const {
     return item->data;
 }
 
-template <typename T>
-bool List<T>::Iterator::operator == (const Iterator &other) const {
+template <typename T, class Allocator>
+bool List<T, Allocator>::Iterator::operator == (const Iterator &other) const {
     return item == other.item;
 }
 
-template <typename T>
-bool List<T>::Iterator::operator != (const Iterator &other) const{
+template <typename T, class Allocator>
+bool List<T, Allocator>::Iterator::operator != (const Iterator &other) const{
     return !(other == *this);
 }
 
-template <typename T>
-T* List<T>::Iterator::operator ->() const {
+template <typename T, class Allocator>
+T* List<T, Allocator>::Iterator::operator ->() const {
     return &(item->data);
 }
 
-template <typename T>
-typename List<T>::Iterator &List<T>::Iterator::operator =(const typename List<T>::Iterator &other) {
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator =(const typename List<T, Allocator>::Iterator &other) {
     item = other.item;
     return *this;
 }
 
-template <typename T>
-typename List<T>::Iterator &List<T>::Iterator::operator =(typename List<T>::Iterator &&other) noexcept{
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator =(typename List<T, Allocator>::Iterator &&other) noexcept{
     item = std::move(other.item);
 }
 
-template <typename T>
-typename List<T>::Iterator List<T>::begin() {
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator List<T, Allocator>::begin() {
     return Iterator(head);
 }
 
-template <typename T>
-typename List<T>::Iterator List<T>::end() {
+template <typename T, class Allocator>
+typename List<T, Allocator>::Iterator List<T, Allocator>::end() {
     return Iterator(nullptr);
 }
 
-template <typename T>
-void List<T>::insert(List::Iterator iter, const T& value) {
+template <typename T, class Allocator>
+void List<T, Allocator>::insert(List::Iterator iter, const T& value) {
     auto jter = this->begin();
-    Node *cur = head;
+    Node<T> *cur = head;
     while (iter != jter) {
         cur = cur->next;
         ++jter;
     }
-    Node *tmp = cur->next;
-    cur->next = new Node(value);
+    Node<T> *tmp = cur->next;
+    cur->next = _alloc.allocate(1);
+    cur->next->data = value;
     cur->next->next = tmp;
-    size++;
+    _size++;
 }
 
-template <typename T>
-void List<T>::erase(List::Iterator iter) {
+template <typename T, class Allocator>
+void List<T, Allocator>::erase(List::Iterator iter) {
     auto jter = this->begin();
-    Node *cur = head;
-    Node *prev;
+    Node<T> *cur = head;
+    Node<T> *prev;
     while (iter != jter) {
         prev = cur;
         if (cur == nullptr) {
@@ -408,26 +392,26 @@ void List<T>::erase(List::Iterator iter) {
         cur = cur->next;
         ++jter;
     }
-    Node *tmp = prev->next->next;
-    delete prev->next;
+    Node<T> *tmp = prev->next->next;
+    _alloc.deallocate(prev->next, 1);
     prev->next = tmp;
-    size--;
+    _size--;
 }
 
-template <typename T>
-List<T>::ConstIterator::ConstIterator(ConstIterator &other) : item(other.item) {}
+template <typename T, class Allocator>
+List<T, Allocator>::ConstIterator::ConstIterator(ConstIterator &other) : item(other.item) {}
 
-template <typename T>
-List<T>::ConstIterator::ConstIterator(ConstIterator &&other) noexcept {
+template <typename T, class Allocator>
+List<T, Allocator>::ConstIterator::ConstIterator(ConstIterator &&other) noexcept {
     item = std::move(other.item);
 }
 
-template <typename T>
-List<T>::ConstIterator::ConstIterator(Node *node) : item(node) {}
+template <typename T, class Allocator>
+List<T, Allocator>::ConstIterator::ConstIterator(Node<T> *node) : item(node) {}
 
 
-template <typename T>
-const typename List<T>::ConstIterator &List<T>::ConstIterator::operator++() {
+template <typename T, class Allocator>
+const typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator++() {
     if (item == nullptr) {
         throw std::range_error("Out of range");
     }
@@ -435,8 +419,8 @@ const typename List<T>::ConstIterator &List<T>::ConstIterator::operator++() {
     return *this;
 }
 
-template <typename T>
-typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int) {
+template <typename T, class Allocator>
+typename List<T, Allocator>::ConstIterator List<T, Allocator>::ConstIterator::operator++(int) {
     List::ConstIterator tmp = *this;
     if (tmp == nullptr) {
         throw std::range_error("Out of range");
@@ -445,8 +429,8 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int) {
     return tmp;
 }
 
-template <typename T>
-const typename List<T>::ConstIterator &List<T>::ConstIterator::operator+(size_t rhs) {
+template <typename T, class Allocator>
+const typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator+(size_t rhs) {
     for (size_t i = 0; i < rhs; i++) {
         if (item == nullptr) {
             throw std::range_error("Out of range");
@@ -459,43 +443,43 @@ const typename List<T>::ConstIterator &List<T>::ConstIterator::operator+(size_t 
     return *this;
 }
 
-template <typename T>
-const T& List<T>::ConstIterator::operator *() const {
+template <typename T, class Allocator>
+const T& List<T, Allocator>::ConstIterator::operator *() const {
     return item->data;
 }
 
-template <typename T>
-bool List<T>::ConstIterator::operator == (const ConstIterator &other) const {
+template <typename T, class Allocator>
+bool List<T, Allocator>::ConstIterator::operator == (const ConstIterator &other) const {
     return item == other.item;
 }
 
-template <typename T>
-bool List<T>::ConstIterator::operator != (const ConstIterator &other) const{
+template <typename T, class Allocator>
+bool List<T, Allocator>::ConstIterator::operator != (const ConstIterator &other) const{
     return !(other == *this);
 }
 
-template <typename T>
-const T* List<T>::ConstIterator::operator-> () const {
+template <typename T, class Allocator>
+const T* List<T, Allocator>::ConstIterator::operator-> () const {
     return &(item->data);
 }
 
-template <typename T>
-typename List<T>::ConstIterator &List<T>::ConstIterator::operator =(const typename List<T>::ConstIterator &other) {
+template <typename T, class Allocator>
+typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator =(const typename List<T, Allocator>::ConstIterator &other) {
     item = other.item;
     return *this;
 }
 
-template <typename T>
-typename List<T>::ConstIterator &List<T>::ConstIterator::operator =(typename List<T>::ConstIterator &&other) noexcept{
+template <typename T, class Allocator>
+typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator =(typename List<T, Allocator>::ConstIterator &&other) noexcept{
     item = std::move(other.item);
 }
 
-template <typename T>
-typename List<T>::ConstIterator List<T>::cbegin() {
+template <typename T, class Allocator>
+typename List<T, Allocator>::ConstIterator List<T, Allocator>::cbegin() {
     return ConstIterator(head);
 }
 
-template <typename T>
-typename List<T>::ConstIterator List<T>::cend() {
+template <typename T, class Allocator>
+typename List<T, Allocator>::ConstIterator List<T, Allocator>::cend() {
     return ConstIterator(nullptr);
 }
