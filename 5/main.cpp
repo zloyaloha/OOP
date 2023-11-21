@@ -1,8 +1,11 @@
-#include "list.h"
+#include "allocator.h"
 
 int main() {
-    List<int> a{1,2,3,4,5};
-    auto iter = a.begin();
-    a.erase(iter);
-    std::cout << a << std::endl;
+    PoolAllocator<int> test;
+    int *ptr = test.allocate(5);
+    test.allocate(1);
+    test.allocate(1);
+    test.allocate(1);
+    test.allocate(1);
+    test.allocate(1);
 }

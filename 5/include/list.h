@@ -44,6 +44,7 @@ template <typename T>
 
             int getSize() const;
             void push_back(const T &value);
+            void emplace(const T &value);
             void remove();
             void pop();
             bool is_empty() const;
@@ -69,14 +70,37 @@ template <typename T>
                     List::Iterator &operator ++();
                     List::Iterator operator ++(int);
                     List::Iterator &operator + (size_t rhs);
-                    T& operator* ();
-                    T* operator-> ();
+                    T& operator* () const;
+                    T* operator-> () const;
                     bool operator ==(const Iterator &other) const;
                     bool operator !=(const Iterator &other) const;
-                    List::Iterator &operator =(Iterator &other);
+                    List::Iterator &operator =(const Iterator &other);
                     List::Iterator &operator =(Iterator &&other) noexcept;
             };
 
+            class ConstIterator {
+                friend class List;
+                private:
+                    const Node *item;
+                public:
+
+                    ConstIterator(ConstIterator &other);
+                    ConstIterator(ConstIterator &&other) noexcept;
+                    ConstIterator(Node *node);
+                    ~ConstIterator() = default;
+                    
+                    const List::ConstIterator &operator ++();
+                    List::ConstIterator operator ++(int);
+                    const List::ConstIterator &operator + (size_t rhs);
+                    const T& operator *() const;
+                    const T* operator ->() const;
+                    bool operator ==(const ConstIterator &other) const;
+                    bool operator !=(const ConstIterator &other) const;
+                    List::ConstIterator &operator =(const ConstIterator &other);
+                    List::ConstIterator &operator =(ConstIterator &&other) noexcept;
+            };
+            List::ConstIterator cbegin();
+            List::ConstIterator cend();
             List::Iterator begin();
             List::Iterator end();
             void insert(List::Iterator iter, const T& value);
@@ -184,6 +208,15 @@ void List<T>::push_back (const T &value){
 }
 
 template<typename T>
+void List<T>::emplace (const T &value){
+    Node *tmp = new Node(head->data);
+    tmp->next = head->next;
+    head->data = value;
+    head->next = tmp;
+    size++;
+}
+
+template<typename T>
 void List<T>::remove(){
     if (this->is_empty()) {
         throw std::logic_error("Can't remove from empty list");
@@ -260,7 +293,6 @@ List<T> &List<T>::operator=(List<T> &&other) noexcept {
     size = other.size; other.size = 0;
     head = other.head; other.head = nullptr;
     tail = other.tail; other.tail = nullptr;
-    
     return *this;
 }
 
@@ -277,25 +309,39 @@ List<T>::Iterator::Iterator(Node *node) : item(node) {}
 
 template <typename T>
 typename List<T>::Iterator &List<T>::Iterator::operator++() {
+    if (item == nullptr) {
+        throw std::range_error("Out of range");
+    }
     item = item->next;
     return *this;
 }
 
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator++(int) {
-    List::Iterator tmp = *this; 
+    List::Iterator tmp = *this;
+    if (tmp == nullptr) {
+        throw std::range_error("Out of range");
+    }
     ++(tmp); 
     return tmp;
 }
 
 template <typename T>
 typename List<T>::Iterator &List<T>::Iterator::operator+(size_t rhs) {
-    for (size_t i = 0; i < rhs; i++) ++item;
+    for (size_t i = 0; i < rhs; i++) {
+        if (item == nullptr) {
+            throw std::range_error("Out of range");
+        }
+        item = item->next;
+    }
+    if (item == nullptr) {
+        throw std::range_error("Out of range");
+    }
     return *this;
 }
 
 template <typename T>
-T& List<T>::Iterator::operator *() {
+T& List<T>::Iterator::operator *() const {
     return item->data;
 }
 
@@ -310,17 +356,18 @@ bool List<T>::Iterator::operator != (const Iterator &other) const{
 }
 
 template <typename T>
-T* List<T>::Iterator::operator -> () {
+T* List<T>::Iterator::operator ->() const {
     return &(item->data);
 }
 
 template <typename T>
-typename List<T>::Iterator &List<T>::Iterator::operator = (typename List<T>::Iterator &other) {
+typename List<T>::Iterator &List<T>::Iterator::operator =(const typename List<T>::Iterator &other) {
     item = other.item;
+    return *this;
 }
 
 template <typename T>
-typename List<T>::Iterator &List<T>::Iterator::operator = (typename List<T>::Iterator &&other) noexcept{
+typename List<T>::Iterator &List<T>::Iterator::operator =(typename List<T>::Iterator &&other) noexcept{
     item = std::move(other.item);
 }
 
@@ -331,11 +378,11 @@ typename List<T>::Iterator List<T>::begin() {
 
 template <typename T>
 typename List<T>::Iterator List<T>::end() {
-    return Iterator(tail);
+    return Iterator(nullptr);
 }
 
 template <typename T>
-void List<T>::insert (List::Iterator iter, const T& value) {
+void List<T>::insert(List::Iterator iter, const T& value) {
     auto jter = this->begin();
     Node *cur = head;
     while (iter != jter) {
@@ -352,12 +399,103 @@ template <typename T>
 void List<T>::erase(List::Iterator iter) {
     auto jter = this->begin();
     Node *cur = head;
+    Node *prev;
     while (iter != jter) {
+        prev = cur;
+        if (cur == nullptr) {
+            throw std::range_error("Out of range");
+        }
         cur = cur->next;
         ++jter;
     }
-    Node *tmp = cur->next->next;
-    delete cur->next;
-    cur->next = tmp;
+    Node *tmp = prev->next->next;
+    delete prev->next;
+    prev->next = tmp;
     size--;
+}
+
+template <typename T>
+List<T>::ConstIterator::ConstIterator(ConstIterator &other) : item(other.item) {}
+
+template <typename T>
+List<T>::ConstIterator::ConstIterator(ConstIterator &&other) noexcept {
+    item = std::move(other.item);
+}
+
+template <typename T>
+List<T>::ConstIterator::ConstIterator(Node *node) : item(node) {}
+
+
+template <typename T>
+const typename List<T>::ConstIterator &List<T>::ConstIterator::operator++() {
+    if (item == nullptr) {
+        throw std::range_error("Out of range");
+    }
+    item = item->next;
+    return *this;
+}
+
+template <typename T>
+typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int) {
+    List::ConstIterator tmp = *this;
+    if (tmp == nullptr) {
+        throw std::range_error("Out of range");
+    }
+    ++(tmp); 
+    return tmp;
+}
+
+template <typename T>
+const typename List<T>::ConstIterator &List<T>::ConstIterator::operator+(size_t rhs) {
+    for (size_t i = 0; i < rhs; i++) {
+        if (item == nullptr) {
+            throw std::range_error("Out of range");
+        }
+        item = item->next;
+    }
+    if (item == nullptr) {
+        throw std::range_error("Out of range");
+    }
+    return *this;
+}
+
+template <typename T>
+const T& List<T>::ConstIterator::operator *() const {
+    return item->data;
+}
+
+template <typename T>
+bool List<T>::ConstIterator::operator == (const ConstIterator &other) const {
+    return item == other.item;
+}
+
+template <typename T>
+bool List<T>::ConstIterator::operator != (const ConstIterator &other) const{
+    return !(other == *this);
+}
+
+template <typename T>
+const T* List<T>::ConstIterator::operator-> () const {
+    return &(item->data);
+}
+
+template <typename T>
+typename List<T>::ConstIterator &List<T>::ConstIterator::operator =(const typename List<T>::ConstIterator &other) {
+    item = other.item;
+    return *this;
+}
+
+template <typename T>
+typename List<T>::ConstIterator &List<T>::ConstIterator::operator =(typename List<T>::ConstIterator &&other) noexcept{
+    item = std::move(other.item);
+}
+
+template <typename T>
+typename List<T>::ConstIterator List<T>::cbegin() {
+    return ConstIterator(head);
+}
+
+template <typename T>
+typename List<T>::ConstIterator List<T>::cend() {
+    return ConstIterator(nullptr);
 }
