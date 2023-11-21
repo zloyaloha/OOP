@@ -1,4 +1,5 @@
 #include <map>
+#include <vector>
 #include "list.h"
 
 int fact(int dig) {
@@ -12,15 +13,7 @@ int fact(int dig) {
 }
 
 int main() {
-    List<int> l;
-    l.emplace(1);
-    std::cout << l.front() << ' ' << l.back() << std::endl;
-    l.emplace(3);
-    std::cout << l.front() << ' ' << l.back() << std::endl;
-    l.emplace(2);
-    std::cout << l.front() << ' ' << l.back() << std::endl;
-    l.emplace(0);
-    std::cout << l.front() << ' ' << l.back() << std::endl;
-    l.emplace(-9);
-    std::cout << l.front() << ' ' << l.back() << std::endl;
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{1,2,3,4};
+    l1.erase(l1.end());
 }

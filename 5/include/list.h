@@ -78,9 +78,9 @@ template <typename T, class Allocator = PoolAllocator<Node<T>>>
                     ConstIterator(Node<T> *node);
                     ~ConstIterator() = default;
                     
-                    const List::ConstIterator &operator ++();
+                    List::ConstIterator &operator ++();
                     List::ConstIterator operator ++(int);
-                    const List::ConstIterator &operator + (size_t rhs);
+                    List::ConstIterator &operator + (size_t rhs);
                     const T& operator *() const;
                     const T* operator ->() const;
                     bool operator ==(const ConstIterator &other) const;
@@ -309,12 +309,11 @@ typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator++(
 
 template <typename T, class Allocator>
 typename List<T, Allocator>::Iterator List<T, Allocator>::Iterator::operator++(int) {
-    List::Iterator tmp = *this;
-    if (tmp == nullptr) {
+    if (item == nullptr) {
         throw std::range_error("Out of range");
     }
-    ++(tmp); 
-    return tmp;
+    item = item->next;
+    return *this;
 }
 
 template <typename T, class Allocator>
@@ -360,6 +359,7 @@ typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator =(
 template <typename T, class Allocator>
 typename List<T, Allocator>::Iterator &List<T, Allocator>::Iterator::operator =(typename List<T, Allocator>::Iterator &&other) noexcept{
     item = std::move(other.item);
+    return *this;
 }
 
 template <typename T, class Allocator>
@@ -374,6 +374,10 @@ typename List<T, Allocator>::Iterator List<T, Allocator>::end() {
 
 template <typename T, class Allocator>
 void List<T, Allocator>::insert(List::Iterator iter, const T& value) {
+    if (iter == this->end() || this->is_empty()) {
+        this->push_back(value);
+        return;
+    }
     auto jter = this->begin();
     Node<T> *cur = head;
     while (iter != jter) {
@@ -389,6 +393,14 @@ void List<T, Allocator>::insert(List::Iterator iter, const T& value) {
 
 template <typename T, class Allocator>
 void List<T, Allocator>::erase(List::Iterator iter) {
+    if (iter == this->end() || this->is_empty()) {
+        this->pop();
+        return;
+    }
+    if (iter == this->begin() || this->is_empty()) {
+        this->remove();
+        return;
+    }
     auto jter = this->begin();
     Node<T> *cur = head;
     Node<T> *prev;
@@ -419,7 +431,7 @@ List<T, Allocator>::ConstIterator::ConstIterator(Node<T> *node) : item(node) {}
 
 
 template <typename T, class Allocator>
-const typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator++() {
+typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator++() {
     if (item == nullptr) {
         throw std::range_error("Out of range");
     }
@@ -429,16 +441,15 @@ const typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstItera
 
 template <typename T, class Allocator>
 typename List<T, Allocator>::ConstIterator List<T, Allocator>::ConstIterator::operator++(int) {
-    List::ConstIterator tmp = *this;
-    if (tmp == nullptr) {
+    if (item == nullptr) {
         throw std::range_error("Out of range");
     }
-    ++(tmp); 
-    return tmp;
+    item = item->next;
+    return *this;
 }
 
 template <typename T, class Allocator>
-const typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator+(size_t rhs) {
+typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator+(size_t rhs) {
     for (size_t i = 0; i < rhs; i++) {
         if (item == nullptr) {
             throw std::range_error("Out of range");
@@ -480,6 +491,7 @@ typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::o
 template <typename T, class Allocator>
 typename List<T, Allocator>::ConstIterator &List<T, Allocator>::ConstIterator::operator =(typename List<T, Allocator>::ConstIterator &&other) noexcept{
     item = std::move(other.item);
+    return *this;
 }
 
 template <typename T, class Allocator>

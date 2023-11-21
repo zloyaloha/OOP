@@ -487,6 +487,205 @@ TEST(MoveAssignmentOperator, TEST_02) {
     ASSERT_TRUE(l == l2);
 }
 
+TEST(IteratorTest, TEST_01) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    size_t j = 0;
+    bool flag = true;
+    for (auto i = l1.begin(); i != l1.end(); ++i) {
+        if (*i != l1[j]) {
+            flag = false;
+        }
+        j++;
+    }
+    ASSERT_TRUE(flag);
+}
+
+TEST(IteratorTest, TEST_02) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    size_t j = 0;
+    bool flag = true;
+    for (auto i = l1.begin(); i != l1.end(); i++) {
+        if (*i != l1[j]) {
+            flag = false;
+        }
+        j++;
+    }
+    ASSERT_TRUE(flag);
+}
+
+TEST(IteratorTest, TEST_03) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    size_t j = 0;
+    bool flag = true;
+    for (auto i = l1.cbegin(); i != l1.cend(); i++) {
+        if (*i != l1[j]) {
+            flag = false;
+        }
+        j++;
+    }
+    ASSERT_TRUE(flag);
+}
+
+TEST(IteratorTest, TEST_04) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    size_t j = 0;
+    bool flag = true;
+    for (auto i = l1.cbegin(); i != l1.cend(); ++i) {
+        if (*i != l1[j]) {
+            flag = false;
+        }
+        j++;
+    }
+    ASSERT_TRUE(flag);
+}
+
+TEST(IteratorTest, TEST_05) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter = l1.begin() + 5;
+    ASSERT_TRUE(*iter == 123);
+}
+
+TEST(IteratorTest, TEST_06) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.begin() + 4;
+    auto iter2 = l1.begin() + 4;
+    ASSERT_TRUE(iter1 == iter2);
+}
+
+TEST(IteratorTest, TEST_07) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.begin() + 5;
+    auto iter2 = l1.begin() + 4;
+    ASSERT_TRUE(iter1 != iter2);
+}
+
+TEST(IteratorTest, TEST_08) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.cbegin() + 4;
+    auto iter2 = l1.cbegin() + 4;
+    ASSERT_TRUE(iter1 == iter2);
+}
+
+TEST(IteratorTest, TEST_09) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.cbegin() + 5;
+    auto iter2 = l1.cbegin() + 4;
+    ASSERT_TRUE(iter1 != iter2);
+}
+
+TEST(IteratorTest, TEST_10) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.end();
+    auto iter2 = l1.end();
+    ASSERT_TRUE(iter1 == iter2);
+}
+
+TEST(IteratorTest, TEST_11) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.end();
+    auto iter2 = l1.begin() + 4;
+    ASSERT_TRUE(iter1 != iter2);
+}
+
+TEST(IteratorTest, TEST_12) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.cend();
+    auto iter2 = l1.cend();
+    ASSERT_TRUE(iter1 == iter2);
+}
+
+TEST(IteratorTest, TEST_13) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.cend();
+    auto iter2 = l1.cbegin() + 4;
+    ASSERT_TRUE(iter1 != iter2);
+}
+
+TEST(IteratorTest, TEST_14) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.cend();
+    auto iter2 = l1.cbegin();
+    iter2 = iter1;
+    ASSERT_TRUE(iter1 == iter2);
+}
+
+TEST(IteratorTest, TEST_15) {
+List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.begin();
+    auto iter2 = l1.end();
+    iter2 = iter1;
+    ASSERT_TRUE(iter1 == iter2);
+}
+
+TEST(IteratorTest, TEST_16) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.cend();
+    auto iter2 = l1.cbegin();
+    auto iter3 = l1.cend();
+    iter2 = std::move(iter1);
+    ASSERT_TRUE(iter3 == iter2);
+}
+
+TEST(IteratorTest, TEST_17) {
+    List<int> l1{123,12,2,3,1,123,2,5,7,4,4,6,4,5};
+    auto iter1 = l1.begin();
+    auto iter2 = l1.end();
+     auto iter3 = l1.begin();
+    iter2 = std::move(iter1);
+    ASSERT_TRUE(iter3 == iter2);
+}
+
+TEST(Erase, TEST_01) {
+    List<int> l1{1,2,3,4,5};
+    ASSERT_ANY_THROW(l1.erase(l1.begin() + 8));
+}
+
+TEST(Erase, TEST_02) {
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{1,2,4,5};
+    l1.erase(l1.begin() + 2);
+    ASSERT_TRUE(l1 == l2);
+}
+
+TEST(Erase, TEST_03) {
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{2,3,4,5};
+    l1.erase(l1.begin());
+    ASSERT_TRUE(l1 == l2);
+}
+
+TEST(Erase, TEST_04) {
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{1,2,3,4};
+    l1.erase(l1.end());
+    ASSERT_TRUE(l1 == l2);
+}
+
+TEST(Insert, TEST_01) {
+    List<int> l1{1,2,3,4,5};
+    ASSERT_ANY_THROW(l1.insert(l1.begin() + 8,500000));
+}
+
+TEST(Insert, TEST_02) {
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{1,2,3,100,4,5};
+    l1.insert(l1.begin() + 2, 100);
+    ASSERT_TRUE(l1 == l2);
+}
+
+TEST(Insert, TEST_03) {
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{1,100,2,3,4,5};
+    l1.insert(l1.begin(), 100);
+    ASSERT_TRUE(l1 == l2);
+}
+
+TEST(Insert, TEST_04) {
+    List<int> l1{1,2,3,4,5};
+    List<int> l2{1,2,3,4,5,100};
+    l1.insert(l1.end(),100);
+    ASSERT_TRUE(l1 == l2);
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
