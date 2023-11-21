@@ -7,7 +7,7 @@
 template<class T>
 class PoolAllocator {
     private:
-        static constexpr size_t POOL_SIZE = 1024;
+        static constexpr size_t POOL_SIZE = 30000;
         std::vector<T> _pool;
         std::vector<T*> _free;
     public:
