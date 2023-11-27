@@ -8,6 +8,7 @@ template<class T>
 class PoolAllocator {
     private:
         static constexpr size_t POOL_SIZE = 30000;
+        size_t _chunk_size;
         std::vector<T> _pool;
         std::vector<T*> _free;
     public:
@@ -25,7 +26,9 @@ class PoolAllocator {
         PoolAllocator();
         PoolAllocator(PoolAllocator &&other) noexcept;
 
-        pointer allocate(size_type n);
+        pointer allocate();
+        pointer allocate(size_t n);
+        void deallocate(pointer ptr);
         void deallocate(pointer ptr, size_type n);
 
         PoolAllocator &operator =(PoolAllocator &&other) noexcept;
@@ -61,10 +64,7 @@ PoolAllocator<T> &PoolAllocator<T>::operator =(PoolAllocator &&other) noexcept{
 }
 
 template <typename T>
-T* PoolAllocator<T>::allocate(size_type n){
-    if (n != 1) {
-        throw std::logic_error("PoolAllocator does not support working with multiple objects at once");
-    }
+T* PoolAllocator<T>::allocate(){
     if (_free.empty()) {
         throw std::bad_alloc();
     }
@@ -74,12 +74,32 @@ T* PoolAllocator<T>::allocate(size_type n){
 }
 
 template <typename T>
-void PoolAllocator<T>::deallocate(pointer ptr, size_type n) {
-    if (n != 1) {
-        throw std::logic_error("PoolAllocator does not support working with multiple objects at once");
+T* PoolAllocator<T>::allocate(size_t n){
+    if (_free.empty()) {
+        throw std::bad_alloc();
     }
+    for (size_t i = 0; i < n - 1; ++i) {
+        _free.pop_back();
+    }
+    T* tmp = _free.back();
+    _free.pop_back();
+    return tmp;
+}
+
+template <typename T>
+void PoolAllocator<T>::deallocate(pointer ptr) {
     if (ptr < &_pool[0] || ptr > &_pool[0] + POOL_SIZE) {
         throw std::logic_error("Allocator does not own this pointer");
     }
     _free.push_back(ptr);
+}
+
+template <typename T>
+void PoolAllocator<T>::deallocate(pointer ptr, size_type n) {
+    if (ptr < &_pool[0] || ptr > &_pool[0] + POOL_SIZE) {
+        throw std::logic_error("Allocator does not own this pointer");
+    }
+    for (int i = 0; i < n; i++) {
+        _free.push_back(ptr);
+    }
 }

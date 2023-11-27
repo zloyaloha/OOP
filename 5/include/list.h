@@ -101,12 +101,12 @@ List<T, Allocator>::List() : head(nullptr), _size(0), tail(nullptr), _alloc() {}
 
 template <typename T, class Allocator>
 List<T, Allocator>::List(const std::initializer_list<T> &l) {
-    head = _alloc.allocate(1);
+    head = _alloc.allocate();
     head->data = *l.begin();
     _size = l.size();
     Node<T> *cur = head;
     for (auto el = l.begin() + 1; el != l.end(); ++el) {
-        cur->next = _alloc.allocate(1);
+        cur->next = _alloc.allocate();
         cur->next->data = *el;
         cur = cur->next;
     }
@@ -117,12 +117,12 @@ List<T, Allocator>::List(const std::initializer_list<T> &l) {
 template <typename T, class Allocator>
 List<T, Allocator>::List(const List &other) {
     _size = other._size;
-    head = _alloc.allocate(1);
+    head = _alloc.allocate();
     head->data = other.head->data;
     head->next = other.head->next;
     Node<T> *cur = head;
     for (Node<T> *t = other.head->next; t != nullptr; t = t->next) {
-        cur->next = _alloc.allocate(1);
+        cur->next = _alloc.allocate();
         cur->next->data = t->data;
         cur->next->next = t->next;
         cur = cur->next;
@@ -167,7 +167,7 @@ bool List<T, Allocator>::is_empty() const {
 
 template<typename T, class Allocator>
 void List<T, Allocator>::push_back (const T &value){
-    Node<T> *tmp = _alloc.allocate(1);
+    Node<T> *tmp = _alloc.allocate();
     tmp->data = value;
     tmp->next = nullptr;
     if (this->is_empty()) {
@@ -182,7 +182,7 @@ void List<T, Allocator>::push_back (const T &value){
 
 template<typename T, class Allocator>
 void List<T, Allocator>::emplace (const T &value){
-    Node<T> *tmp = _alloc.allocate(1);
+    Node<T> *tmp = _alloc.allocate();
     tmp->next = nullptr;
     tmp->data = value;
     if (this->is_empty()) {
@@ -201,7 +201,7 @@ void List<T, Allocator>::remove(){
         throw std::logic_error("Can't remove from empty list");
     }
     if (head == tail) {
-        _alloc.deallocate(tail, 1);
+        _alloc.deallocate(tail);
         head = tail = nullptr;
         _size = 0;
         return;
@@ -209,7 +209,7 @@ void List<T, Allocator>::remove(){
     Node<T> *tmp = head;
     head = tmp->next;
     _size--;
-    _alloc.deallocate(tmp, 1);
+    _alloc.deallocate(tmp);
 }
 
 template<typename T, class Allocator>
@@ -225,7 +225,7 @@ void List<T, Allocator>::pop(){
     Node<T> *tmp = head;
     while (tmp->next != tail) tmp = tmp->next;
     tmp->next = nullptr;
-    _alloc.deallocate(tail, 1);
+    _alloc.deallocate(tail);
     tail = tmp;
 }
 
@@ -263,12 +263,12 @@ bool List<T, Allocator>::operator==(const List<T, Allocator> &other) const{
 template<typename T, class Allocator>
 List<T, Allocator> &List<T, Allocator>::operator=(List<T, Allocator> &other) {
     _size = other._size;
-    head = _alloc.allocate(1);
+    head = _alloc.allocate();
     head->data = other.head->data;
     head->next = other.head->next;
     Node<T> *cur = head;
     for (Node<T> *t = other.head->next; t != nullptr; t = t->next) {
-        cur->next = _alloc.allocate(1);
+        cur->next = _alloc.allocate();
         cur->next->data = t->data;
         cur->next->next = t->next;
         cur = cur->next;
@@ -385,7 +385,7 @@ void List<T, Allocator>::insert(List::Iterator iter, const T& value) {
         ++jter;
     }
     Node<T> *tmp = cur->next;
-    cur->next = _alloc.allocate(1);
+    cur->next = _alloc.allocate();
     cur->next->data = value;
     cur->next->next = tmp;
     _size++;
@@ -413,7 +413,7 @@ void List<T, Allocator>::erase(List::Iterator iter) {
         ++jter;
     }
     Node<T> *tmp = prev->next->next;
-    _alloc.deallocate(prev->next, 1);
+    _alloc.deallocate(prev->next);
     prev->next = tmp;
     _size--;
 }

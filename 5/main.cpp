@@ -12,8 +12,16 @@ int fact(int dig) {
     return res;
 }
 
-int main()
-{
+int main() {
+    std::vector<int, PoolAllocator<int>> a;
+    for (int i = 0; i < a.size(); i++) {
+        std::cout << a[i] << ' ';
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < a.size(); i++) {
+        std::cout << a[i] << ' ';
+    }
+    std::cout << std::endl;
     std::map<int, int, std::less<int>, PoolAllocator<std::pair<const int, int>>> test;
     for (size_t i = 0; i < 10; ++i) {
         test[i] = fact(i);

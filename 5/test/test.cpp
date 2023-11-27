@@ -51,30 +51,19 @@ TEST(AllocatorTest, TEST_02) {
 
 TEST(AllocatorTest, TEST_03) {
     PoolAllocator<int> allocator;
-    ASSERT_ANY_THROW(allocator.allocate(5));
+    for (size_t i = 0; i < 30000; i++) {
+        allocator.allocate();
+    }
+    ASSERT_ANY_THROW(allocator.allocate());
 }
 
 TEST(AllocatorTest, TEST_04) {
-    PoolAllocator<int> allocator;
-    int *tmp = allocator.allocate(1);
-    ASSERT_ANY_THROW(allocator.deallocate(tmp, 135));
-}
-
-TEST(AllocatorTest, TEST_05) {
-    PoolAllocator<int> allocator;
-    for (size_t i = 0; i < 1024; i++) {
-        allocator.allocate(1);
-    }
-    ASSERT_ANY_THROW(allocator.allocate(1));
-}
-
-TEST(AllocatorTest, TEST_06) {
     PoolAllocator<int> allocator;
     int *tmp1 = allocator.allocate(1) + sizeof(int) * 2048;
     ASSERT_ANY_THROW(allocator.deallocate(tmp1, 1));
 }
 
-TEST(AllocatorTest, TEST_07) {
+TEST(AllocatorTest, TEST_05) {
     PoolAllocator<int> allocator;
     int *tmp;
     for (size_t i = 0; i < 100; i++) {
