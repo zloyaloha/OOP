@@ -9,10 +9,10 @@ bool Orc::accept(std::shared_ptr<NPC> defender) {
 
 bool VisitorOrc::visit(std::shared_ptr<NPC> defender) {
     if (defender->type() == ORC || defender->type() == BEAR) {
-        return false;
-    } else {
         defender->kill();
         return true;
+    } else {
+        return false;
     }
 }
 
