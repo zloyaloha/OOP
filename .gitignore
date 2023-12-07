@@ -55,4 +55,5 @@ include/*
 lib/*
 bin/*
 test/test_runner
-1/build
+*/build
+
