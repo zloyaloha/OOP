@@ -92,17 +92,16 @@ void Battlefield::placeHero(std::shared_ptr<NPC> npc) {
 
 void Battlefield::removeDeadmen() {
     _npcList.erase(std::remove_if(_npcList.begin(), _npcList.end(), [](std::shared_ptr<NPC> npc) {return !npc->is_alive(); }), _npcList.end());
-    // for (auto iter = _npcList.begin(); iter != _npcList.end(); ++iter) {
-    //     if (!(*iter)->is_alive()) {
-    //         _npcList.erase(iter);
-    //     }
-    // }
 }
 
 void Battlefield::removeHero(std::shared_ptr<NPC> npc) {
     if (!_npcList.remove(npc)) {
         throw std::logic_error("NPC not on battlefield");
     }
+}
+
+std::list<std::shared_ptr<NPC>> Battlefield::npc() {
+    return _npcList;
 }
 
 void Battlefield::battle(size_t rounds, double distance) {

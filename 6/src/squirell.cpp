@@ -24,8 +24,8 @@ std::shared_ptr<NPC> SquirrelFactory::create(std::istream &is) {
 }
 
 std::shared_ptr<NPC> SquirrelFactory::create(std::ifstream &ifs) {
-    int x; int y;
-    ifs >> x; ifs >> y;
+    int x; int y; int type;
+    ifs >> x; ifs >> y; ifs >> type;
     std::shared_ptr<NPC> result = std::make_shared<Squirrel>(x,y);
     return result;
 }

@@ -34,6 +34,8 @@ class NPC {
 
         void kill();
         double distance(const std::shared_ptr<NPC> other) const;
+        void save(std::ofstream &ofs);
+        void load(std::ifstream &ifs);
 };
 
 class Factory {

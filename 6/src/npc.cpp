@@ -14,6 +14,21 @@ std::pair<int,int> NPC::coords() const{
     return this->_coords;
 }
 
+void NPC::save(std::ofstream &ofs) {
+    ofs << this->_coords.first << ' ' << this->_coords.second << ' ' << this->type();
+}
+
+void NPC::load(std::ifstream &ifs) {
+    int x,y,type;
+    ifs >> x;
+    ifs >> y;
+    ifs >> type;
+    _coords.first = x;
+    _coords.second = y;
+    _type = TypeNPC(type);
+    alive = true;
+}
+
 bool NPC::is_alive() const{
     return this->alive;
 }

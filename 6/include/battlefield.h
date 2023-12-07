@@ -6,6 +6,8 @@
 #include "squirrel.h"
 #include "orc.h"
 
+#define ESPILON 0.001
+
 namespace Commands {
     const int LOSE = 0;
     const int WIN = 1;
@@ -30,6 +32,7 @@ class Battlefield {
         void removeHero(std::shared_ptr<NPC> npc);
         void removeDeadmen();
 
+        std::list<std::shared_ptr<NPC>> npc();
         void battle(size_t rounds, double distance);
     private:
         std::pair<int, int> _size;

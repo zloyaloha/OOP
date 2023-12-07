@@ -7,6 +7,7 @@ bool Bear::accept(std::shared_ptr<NPC> defender) {
     return v.visit(defender);
 }
 
+
 bool VisitorBear::visit(std::shared_ptr<NPC> defender) {
     if (defender->type() == BEAR || defender->type() == ORC) {
         return false;
@@ -29,8 +30,8 @@ std::shared_ptr<NPC> BearFactory::create(std::istream &is) {
 }
 
 std::shared_ptr<NPC> BearFactory::create(std::ifstream &ifs) {
-    int x; int y;
-    ifs >> x; ifs >> y;
+    int x; int y; int type;
+    ifs >> x; ifs >> y; ifs >> type;
     std::shared_ptr<NPC> result = std::make_shared<Bear>(x,y);
     return result;
 }
