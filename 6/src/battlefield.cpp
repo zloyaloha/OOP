@@ -9,7 +9,7 @@ std::ostream &operator << (std::ostream &os, Battlefield &btf) {
     return os;
 }
 
-Battlefield::Battlefield() : _size(500,500), _npcList(), _observers() {}
+Battlefield::Battlefield() : _size(BTF_SIZE,BTF_SIZE), _npcList(), _observers() {}
 
 void Battlefield::attachObs(std::shared_ptr<Observer> obs) {
     _observers.push_back(obs);
@@ -34,21 +34,21 @@ void Battlefield::fillRandomly(size_t seed, size_t orcs, size_t squirrels, size_
         switch (rand() % 3 + 1) {
             case BEAR:
                 if (c_b < bears) {
-                    bearNPC = factoryB->create(rand() % 500, rand() % 500);
+                    bearNPC = factoryB->create(rand() % BTF_SIZE, rand() % BTF_SIZE);
                     this->placeHero(bearNPC);
                     c_b++;
                 }
                 break;
             case SQUIRREL:
                 if (c_sq < squirrels) {
-                    squirrelNPC = factoryS->create(rand() % 500, rand() % 500);
+                    squirrelNPC = factoryS->create(rand() % BTF_SIZE, rand() % BTF_SIZE);
                     this->placeHero(squirrelNPC);
                     c_sq++;
                 }
                 break;
             case ORC:
                 if (c_o < orcs) {
-                    orcNPC = factoryO->create(rand() % 500, rand() % 500);
+                    orcNPC = factoryO->create(rand() % BTF_SIZE, rand() % BTF_SIZE);
                     this->placeHero(orcNPC);
                     c_o++;
                 }
@@ -87,7 +87,7 @@ void Battlefield::notify(std::shared_ptr<NPC> attacker, std::shared_ptr<NPC> def
 }
 
 void Battlefield::placeHero(std::shared_ptr<NPC> npc) {
-    if (npc->coords().first < 500 && npc->coords().first < 500) _npcList.push_back(npc);
+    if (npc->coords().first < BTF_SIZE && npc->coords().first < BTF_SIZE) _npcList.push_back(npc);
 }
 
 void Battlefield::removeDeadmen() {

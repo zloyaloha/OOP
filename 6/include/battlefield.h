@@ -7,7 +7,7 @@
 #include "orc.h"
 
 #define ESPILON 0.001
-
+#define BTF_SIZE 500
 namespace Commands {
     const int LOSE = 0;
     const int WIN = 1;
