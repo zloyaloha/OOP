@@ -1,4 +1,3 @@
-
 #include "battlefield.h"
 
 int main() {
@@ -8,7 +7,7 @@ int main() {
     std::shared_ptr<NPC> bear = fB->create(10,20);
     bear->save(file1);
     std::shared_ptr<Battlefield> btf = std::make_shared<Battlefield>();
-    btf->fillRandomly(time(NULL), 10,20,30);
+    btf->fillRandomly(time(NULL), 3,3,3);
     std::shared_ptr<ObserverBattlefieldOstream> obsO = std::make_shared<ObserverBattlefieldOstream>();
     std::shared_ptr<ObserverBattlefieldFile> obsF = std::make_shared<ObserverBattlefieldFile>();
     btf->attachObs(obsF);

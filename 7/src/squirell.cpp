@@ -1,6 +1,7 @@
 #include "squirrel.h"
 
-Squirrel::Squirrel(const int &x, const int &y) : NPC{SQUIRREL, x, y} {}
+Squirrel::Squirrel(const int &x, const int &y) : 
+    NPC(SQUIRREL, x, y, RangeMove::ATTACK_RANGE_SQUIRREL, RangeMove::MOVE_RANGE_SQUIRREL) {}
 
 int Squirrel::accept(const std::shared_ptr<Visitor>& attacker_visitor, const std::shared_ptr<NPC>& attacker) {
     std::shared_ptr<const NPC> npc_const_ptr = shared_from_this();

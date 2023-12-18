@@ -111,27 +111,32 @@ std::list<std::shared_ptr<NPC>> Battlefield::npc() {
 }
 
 void Battlefield::battle(size_t rounds, double distance) {
+    auto start = std::chrono::system_clock::now();
     this->notify(nullptr, nullptr, Commands::BATTLE_START);
-    for (size_t i = 0; i < rounds; ++i) {
+    while (true) {
+        if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() > 10) {
+            break;
+        }
+        for (auto npc: _npcList) {
+            if (npc->is_alive()) {
+                int moveX = -npc->move_range() + std::rand() % (2 * npc->move_range());
+                int moveY = -npc->move_range() + std::rand() % (2 * npc->move_range());
+                npc->move(moveX, moveY);
+            }
+        }
         for (auto attacker : _npcList) {
             bool success1;
-            bool success2;
             for (auto defender : _npcList) {
-                if (attacker != defender && attacker->is_alive() && defender->is_alive() && distance > defender->distance(attacker)) {
+                if (attacker != defender && attacker->is_alive() && defender->is_alive() && attacker->attack_range() > defender->distance(attacker)) {
                     success1 = attacker->accept(visitors[defender->type()], defender);
                     if (success1) {
                         defender->kill();
                     }
                     this->notify(attacker, defender, success1);
-                    if (success2) {
-                        attacker->kill();
-                    }
-                    success2 = defender->accept(visitors[attacker->type()], attacker);
-                    this->notify(defender, attacker, success2);
                 }
             }
         }
-        distance+=distance;
+        sleep(1);
     }
     this->notify(nullptr, nullptr, Commands::BATTLE_END);
 }

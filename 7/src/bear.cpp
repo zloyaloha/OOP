@@ -1,6 +1,7 @@
 #include "bear.h"
 
-Bear::Bear(const int &x, const int &y) : NPC{BEAR, x, y} {}
+Bear::Bear(const int &x, const int &y) : 
+    NPC(BEAR, x, y, RangeMove::ATTACK_RANGE_BEAR, RangeMove::MOVE_RANGE_BEAR) {}
 
 int Bear::accept(const std::shared_ptr<Visitor>& attacker_visitor, const std::shared_ptr<NPC>& attacker) {
     std::shared_ptr<const NPC> npc_const_ptr = shared_from_this();
