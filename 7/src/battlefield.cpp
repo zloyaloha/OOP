@@ -1,5 +1,11 @@
 #include "battlefield.h"
 
+std::unordered_map<TypeNPC, std::shared_ptr<Visitor>> visitors = {
+    {BEAR, std::make_shared<VisitorBear>()},
+    {SQUIRREL, std::make_shared<VisitorSquirrel>()},
+    {ORC, std::make_shared<VisitorOrc>()}
+};
+
 std::ostream &operator << (std::ostream &os, Battlefield &btf) {
     os << "This is a battlefield" << std::endl;
     os << "There are " << btf._npcList.size() << " fighters." << std::endl;
@@ -112,9 +118,15 @@ void Battlefield::battle(size_t rounds, double distance) {
             bool success2;
             for (auto defender : _npcList) {
                 if (attacker != defender && attacker->is_alive() && defender->is_alive() && distance > defender->distance(attacker)) {
-                    success1 = attacker->accept(defender);
+                    success1 = attacker->accept(visitors[defender->type()], defender);
+                    if (success1) {
+                        defender->kill();
+                    }
                     this->notify(attacker, defender, success1);
-                    success2 = defender->accept(attacker);
+                    if (success2) {
+                        attacker->kill();
+                    }
+                    success2 = defender->accept(visitors[attacker->type()], attacker);
                     this->notify(defender, attacker, success2);
                 }
             }
