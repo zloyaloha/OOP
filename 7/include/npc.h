@@ -7,8 +7,11 @@
 #include <cmath>
 #include <fstream>
 #include <mutex>
+#include <unordered_map>
 
-#define BTF_SIZE 50
+#define BTF_SIZE 100
+
+int throw_dice();
 
 namespace RangeMove {
     const int ATTACK_RANGE_BEAR = 10;
@@ -28,6 +31,7 @@ enum TypeNPC {
 class Orc;
 class Bear;
 class Squirrel;
+class ObserverNPC;
 
 class Visitor {
     friend class NPC;
@@ -44,8 +48,9 @@ class NPC : public std::enable_shared_from_this<NPC>{
         bool alive;
         int _rangeAttack;
         int _rangeMove;
+        std::list<std::shared_ptr<ObserverNPC>> _observers;
     private:
-        std::mutex mtx;
+        mutable std::mutex mtx;
     public:
         NPC();
         NPC(TypeNPC type, const std::pair<int,int> &coords, const int &attackRange, const int &movementRange);
@@ -56,7 +61,8 @@ class NPC : public std::enable_shared_from_this<NPC>{
         bool is_alive() const;
         int move_range() const;
         int attack_range() const;
-
+        void notify(const std::shared_ptr<NPC> attacker, const std::shared_ptr<NPC> defender, bool win, int diceA, int diceD, int rangeAttack, double dist);
+        void attachObs(std::shared_ptr<ObserverNPC> obs);
         virtual int accept(const std::shared_ptr<Visitor>& attacker_visitor, const std::shared_ptr<NPC>& attacker) = 0;
         friend std::ostream &operator<<(std::ostream &os, NPC &npc);
 
@@ -75,3 +81,20 @@ class Factory {
         ~Factory() = default;
 };
 
+struct ObserverNPC: public std::enable_shared_from_this<ObserverNPC> {
+    virtual void fight(const std::shared_ptr<NPC> attacker, const std::shared_ptr<NPC> defender, bool win, int diceA, int diceD, int rangeAttack, double dist) = 0;
+};
+
+class ObserverOstream : public ObserverNPC {
+    public:
+        void fight(const std::shared_ptr<NPC> attacker, const std::shared_ptr<NPC> defender, bool win, int diceA, int diceD, int rangeAttack, double dist) override;
+};
+
+class ObserverFile : public ObserverNPC {
+    public:
+        ObserverFile();
+        ~ObserverFile();
+        void fight(const std::shared_ptr<NPC> attacker, const std::shared_ptr<NPC> defender, bool win, int diceA, int diceD, int rangeAttack, double dist) override;
+    private:
+        std::ofstream file;
+};
