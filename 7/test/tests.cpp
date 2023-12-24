@@ -104,19 +104,19 @@ TEST(BattlefieldTEST, TEST_01) {
     ASSERT_TRUE(btf->npc().size() == 3);
 }
 
-// TEST(BattlefieldTEST, TEST_02) {
-//     std::shared_ptr<Factory> fB = std::make_shared<OrcFactory>();
-//     std::shared_ptr<NPC> orc = fB->create(10,20);
-//     std::shared_ptr<Factory> fO = std::make_shared<BearFactory>();
-//     std::shared_ptr<NPC> bear = fO->create(10,20);
-//     std::shared_ptr<Factory> fS = std::make_shared<SquirrelFactory>();
-//     std::shared_ptr<NPC> squirrel = fS->create(10,20);
-//     std::shared_ptr<Battlefield> btf = std::make_shared<Battlefield>();
-//     btf->placeHero(orc);
-//     btf->placeHero(bear);
-//     btf->placeHero(squirrel);
-//     ASSERT_NO_THROW(btf->battle());
-// }
+TEST(BattlefieldTEST, TEST_02) {
+    std::shared_ptr<Factory> fB = std::make_shared<OrcFactory>();
+    std::shared_ptr<NPC> orc = fB->create(10,20);
+    std::shared_ptr<Factory> fO = std::make_shared<BearFactory>();
+    std::shared_ptr<NPC> bear = fO->create(10,20);
+    std::shared_ptr<Factory> fS = std::make_shared<SquirrelFactory>();
+    std::shared_ptr<NPC> squirrel = fS->create(10,20);
+    std::shared_ptr<Battlefield> btf = std::make_shared<Battlefield>();
+    btf->placeHero(orc);
+    btf->placeHero(bear);
+    btf->placeHero(squirrel);
+    ASSERT_NO_THROW(btf->battle());
+}
 
 // TEST(BattlefieldTEST, TEST_03) {
 //     std::shared_ptr<Factory> fB = std::make_shared<OrcFactory>();

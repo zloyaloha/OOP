@@ -127,7 +127,7 @@ void Battlefield::battle() {
                     npc->move(moveX, moveY);
                 }
             }
-            std::this_thread::sleep_for(50ms);
+            std::this_thread::sleep_for(100ms);
         }
         stop = true;
     });
