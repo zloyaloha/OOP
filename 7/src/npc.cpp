@@ -3,7 +3,7 @@
 std::mutex PRmutex;
 
 int throw_dice() {
-    return rand() % 6 + 1;
+    return rand() % DICE_SIZE + 1;
 }
 
 NPC::NPC() : _coords{0,0} {}

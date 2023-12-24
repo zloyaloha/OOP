@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 #define BTF_SIZE 100
-
+#define DICE_SIZE 6
 int throw_dice();
 
 namespace RangeMove {

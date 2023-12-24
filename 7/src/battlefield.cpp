@@ -109,7 +109,7 @@ void Battlefield::battle() {
     std::thread moveThread([this, &stop]() {
         auto start = std::chrono::system_clock::now();
         while (true) {
-            if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() > 30) {
+            if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() > BATTLE_TIME) {
                 break;
             }
             for (auto attacker : _npcList) {
@@ -136,7 +136,7 @@ void Battlefield::battle() {
         if (stop) {
             break;
         }
-        const int grid{20}, step_x{BTF_SIZE / grid}, step_y{BTF_SIZE / grid}, size = (grid + 1) * (grid + 1); 
+        const int grid{BTF_SIZE / 4}, step_x{BTF_SIZE / grid}, step_y{BTF_SIZE / grid}, size = (grid + 1) * (grid + 1); 
         {
             std::array<char, size> fields{0};
             for (std::shared_ptr<NPC> npc : _npcList) {
@@ -269,7 +269,7 @@ void FightManager::push_event(FightMMA && event) {
 void FightManager::operator()() {
     auto start = std::chrono::system_clock::now();
     while(true) {
-        if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() > 31) {
+        if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() > BATTLE_TIME + 1) {
             break;
         }
         std::optional<FightMMA> event;

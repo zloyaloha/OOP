@@ -14,7 +14,7 @@
 
 using namespace std::chrono_literals;
 #define ESPILON 0.001
-
+#define BATTLE_TIME 10
 using namespace std::chrono_literals;
 
 
