@@ -13,7 +13,7 @@ int main() {
     std::shared_ptr<ObserverBattlefieldFile> obsF = std::make_shared<ObserverBattlefieldFile>();
     btf->attachObs(obsF);
     btf->attachObs(obsO);
-    btf->battle(3,4);
+    btf->battle(20,4);
     btf->removeDeadmen();
     std::cout << *btf;
 }   

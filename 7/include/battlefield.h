@@ -1,13 +1,24 @@
 #pragma once
-#include "npc.h"
+#include <queue>
+#include <shared_mutex>
 #include "fstream"
 #include "ctime"
+#include <algorithm>
+#include <chrono>
+#include <thread>
+#include <optional>
+#include "npc.h"
 #include "bear.h"
 #include "squirrel.h"
 #include "orc.h"
 
+using namespace std::chrono_literals;
 #define ESPILON 0.001
-#define BTF_SIZE 500
+#define BATTLE_TIME 10
+using namespace std::chrono_literals;
+
+
+
 namespace Commands {
     const int LOSE = 0;
     const int WIN = 1;
@@ -15,17 +26,18 @@ namespace Commands {
     const int BATTLE_START = 2;
 }
 
-struct Observer;
+struct ObserverBattlefield;
 
 class Battlefield {
+    friend class FightManager;
     public:
         Battlefield();
 
         friend std::ostream &operator<<(std::ostream &os, Battlefield &btf);
 
-        void attachObs(std::shared_ptr<Observer> observer);
-        void detachObs(std::shared_ptr<Observer> observer);
-        void notify(std::shared_ptr<NPC> attacker, std::shared_ptr<NPC> defender, int win);
+        void attachObs(std::shared_ptr<ObserverBattlefield> observer);
+        void detachObs(std::shared_ptr<ObserverBattlefield> observer);
+        void notify(int win);
 
         void fillRandomly(size_t seed, size_t orcs, size_t squrrels, size_t bears);
         void placeHero(std::shared_ptr<NPC> npc);
@@ -33,28 +45,44 @@ class Battlefield {
         void removeDeadmen();
 
         std::list<std::shared_ptr<NPC>> npc();
-        void battle(size_t rounds, double distance);
+        void battle();
     private:
         std::pair<int, int> _size;
         std::list<std::shared_ptr<NPC>> _npcList;
-        std::list<std::shared_ptr<Observer>> _observers;
+        std::list<std::shared_ptr<ObserverBattlefield>> _observers;
 };
 
+struct FightMMA {
+    std::shared_ptr<NPC> attacker;
+    std::shared_ptr<NPC> defender;
+};
 
-struct Observer : public std::enable_shared_from_this<Observer> {
+class FightManager {
+    
+    private:
+        std::queue<FightMMA> _events;
+        std::shared_mutex _mtx;
+    public:
+        FightManager() = default;
+        static FightManager & get();
+        void push_event(FightMMA && event);
+        void operator()();
+};
+
+struct ObserverBattlefield: public std::enable_shared_from_this<ObserverBattlefield> {
     virtual void battleStart(const std::pair<int,int> &size, const std::list<std::shared_ptr<NPC>> _npcList) = 0;
     virtual void fight(const std::shared_ptr<NPC> attacker, const std::shared_ptr<NPC> defender, bool win) = 0;
     virtual void battleEnd(const std::pair<int,int> &size, const std::list<std::shared_ptr<NPC>> _npcList) = 0;
 };
 
-class ObserverBattlefieldOstream : public Observer {
+class ObserverBattlefieldOstream : public ObserverBattlefield {
     public:
         void battleStart(const std::pair<int,int> &size, const std::list<std::shared_ptr<NPC>> _npcList) override;
         void fight(const std::shared_ptr<NPC> attacker, const std::shared_ptr<NPC> defender, bool win) override;
         void battleEnd(const std::pair<int,int> &size, const std::list<std::shared_ptr<NPC>> _npcList) override;
 };
 
-class ObserverBattlefieldFile : public Observer {
+class ObserverBattlefieldFile : public ObserverBattlefield {
     public:
         ObserverBattlefieldFile();
         ~ObserverBattlefieldFile();
